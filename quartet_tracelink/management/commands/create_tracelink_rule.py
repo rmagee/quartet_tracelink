@@ -41,17 +41,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         endpoint = EndPoint.objects.create(
-            name=_('Local Echo Server'),
+            name=_('Local SFTP Server'),
             urn=_('sftp://localhost:22')
         )
         auth = AuthenticationInfo.objects.create(
-            username=_('Test User'),
-            password=_('Test Password'),
+            username=_('Test SFTP User'),
+            password=_('Test SFTP Password'),
             type='SSH',
             description=_('A test user for the example rule.')
         )
         output = EPCISOutputCriteria.objects.create(
-            name=_('Test Transaction Criteria'),
+            name=_('Test TL Criteria'),
             action='ADD',
             event_type='Transaction',
             biz_location='urn:epc:id:sgln:305555.123456.0',
@@ -59,7 +59,7 @@ class Command(BaseCommand):
             authentication_info=auth
         )
         rule = models.Rule.objects.create(
-            name=_('EPCIS Output Filter'),
+            name=_('TL EPCIS Output Filter'),
             description=_('Will inspect inbound messages for output '
                           'processing.')
         )
@@ -113,10 +113,10 @@ class Command(BaseCommand):
         models.StepParameter.objects.create(
             step = output_step,
             name='Output Rule',
-            value='Transport Rule'
+            value='SFTP Transport Rule'
         )
         trule = models.Rule.objects.create(
-            name=_('Transport Rule'),
+            name=_('SFTP Transport Rule'),
             description=_('An output Rule for any data filtered by EPCIS Output Criteria '
                           'rules.')
         )
