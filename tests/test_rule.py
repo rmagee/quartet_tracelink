@@ -62,6 +62,41 @@ class TestRules(TestCase):
                     ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
             )
 
+    def test_rule_with_agg_comm_output(self):
+        self._create_good_ouput_criterion()
+        db_rule = self._create_rule()
+        self._create_step(db_rule)
+        self._create_output_steps(db_rule)
+        self._create_comm_step(db_rule)
+        self._create_epcpyyes_step(db_rule)
+        self._create_task_step(db_rule)
+        db_rule2 = self._create_transport_rule()
+        self._create_transport_step(db_rule2)
+        db_task = self._create_task(db_rule)
+        curpath = os.path.dirname(__file__)
+        # prepopulate the db
+        self._parse_test_data('data/commission_one_event.xml')
+        self._parse_test_data('data/nested_pack.xml')
+        data_path = os.path.join(curpath, 'data/ship_pallet.xml')
+        with open(data_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task)
+            self.assertEqual(
+                len(context.context[ContextKeys.AGGREGATION_EVENTS_KEY.value]),
+                3,
+                "There should be three filtered events."
+            )
+            for event in context.context[
+                ContextKeys.AGGREGATION_EVENTS_KEY.value]:
+                if event.parent_id in ['urn:epc:id:sgtin:305555.3555555.1',
+                                       'urn:epc:id:sgtin:305555.3555555.2']:
+                    self.assertEqual(len(event.child_epcs), 5)
+                else:
+                    self.assertEqual(len(event.child_epcs), 2)
+            task_name = context.context[ContextKeys.CREATED_TASK_NAME_KEY]
+            execute_queued_task(task_name=task_name)
+            task = Task.objects.get(name=task_name)
+            self.assertEqual(task.status, 'FINISHED')
+
     def _create_good_ouput_criterion(self):
         endpoint = self._create_endpoint()
         auth = self._create_auth()
@@ -140,8 +175,8 @@ class TestRules(TestCase):
 
     def _create_rule(self):
         rule = Rule()
-        rule.name = 'output-test'
-        rule.description = 'output test rule'
+        rule.name = 'TraceLink Output'
+        rule.description = 'Inspect Inbound Message and Create TraceLink Output'
         rule.save()
         return rule
 
