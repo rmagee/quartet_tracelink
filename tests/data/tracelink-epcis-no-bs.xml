@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<epcis:EPCISDocument xmlns:cbvmda="urn:epcglobal:cbv:mda" xmlns:epcis="urn:epcglobal:epcis:xsd:1" xmlns:sbdh="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader" xmlns:tl="http://epcis.tracelink.com/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-nstance" creationDate="2017-04-11T07:15:00Z" schemaVersion="1.2" xsi:schemaLocation="urn:epcglobal:epcis:xsd:1 file:///C:/workspace-git/maps_xml_schema/release-obstruction/xmlSchema/pt_serialization/transaction/TL_EPCIS_EPCglobal-epcis-1_2.xsd">
+	<EPCISHeader>
+		<sbdh:StandardBusinessDocumentHeader>
+			<sbdh:HeaderVersion>1.0</sbdh:HeaderVersion>
+			<sbdh:Sender>
+				<sbdh:Identifier Authority="GLN">7777778888342</sbdh:Identifier>
+			</sbdh:Sender>
+			<sbdh:Receiver>
+				<sbdh:Identifier Authority="GLN">8888882028677</sbdh:Identifier>
+			</sbdh:Receiver>
+			<sbdh:DocumentIdentification>
+				<sbdh:Standard>EPCglobal</sbdh:Standard>
+				<sbdh:TypeVersion>1.0</sbdh:TypeVersion>
+				<sbdh:InstanceIdentifier>00699999999990000000283944908</sbdh:InstanceIdentifier>
+				<sbdh:Type>Events</sbdh:Type>
+				<sbdh:CreationDateAndTime>2017-04-11T07:15:00Z</sbdh:CreationDateAndTime>
+			</sbdh:DocumentIdentification>
+		</sbdh:StandardBusinessDocumentHeader>
+	</EPCISHeader>
+	<EPCISBody>
+		<EventList>
+			<ObjectEvent>
+				<eventTime>2017-04-11T00:12:23.83Z</eventTime>
+				<eventTimeZoneOffset>-04:00</eventTimeZoneOffset>
+				<epcList>
+					<epc>urn:epc:id:sscc:0008820.0200000034</epc>
+				</epcList>
+				<action>ADD</action>
+				<bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
+				<disposition>urn:epcglobal:cbv:disp:active</disposition>
+				<readPoint>
+					<id>urn:epc:id:sgln:0085412.00305.0</id>
+				</readPoint>
+				<bizLocation>
+					<id>urn:epc:id:sgln:0085412.00305.0</id>
+				</bizLocation>
+			</ObjectEvent>
+			<ObjectEvent>
+				<eventTime>2017-04-11T00:12:23.83Z</eventTime>
+				<eventTimeZoneOffset>-04:00</eventTimeZoneOffset>
+				<epcList>
+					<epc>urn:epc:id:sgtin:088202.5503022.100000000670</epc>
+				</epcList>
+				<action>ADD</action>
+				<bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
+				<disposition>urn:epcglobal:cbv:disp:active</disposition>
+				<readPoint>
+					<id>urn:epc:id:sgln:0085412.00305.0</id>
+				</readPoint>
+				<bizLocation>
+					<id>urn:epc:id:sgln:0085412.00305.0</id>
+				</bizLocation>
+				<extension>
+					<ilmd>
+						<cbvmda:lotNumber>ABC123</cbvmda:lotNumber>
+						<cbvmda:itemExpirationDate>2019-11-01</cbvmda:itemExpirationDate>
+					</ilmd>
+				</extension>
+				<tl:dispositionAssignedEventExtensions>
+					<tl:filterValue>2</tl:filterValue>
+					<tl:packagingLevel>CA</tl:packagingLevel>
+					<tl:epcAttributes epc="urn:epc:id:sgtin:088202.0503022.100000001020">
+						<tl:barcodeContent>(01)00882025030220(21)100000001020(17)170301(10)ABCDE</tl:barcodeContent>
+					</tl:epcAttributes>
+					<tl:epcAttributes epc="urn:epc:id:sgtin:088202.0503022.100000001021">
+						<tl:barcodeContent>(01)00882025030220(21)100000001021(17)170301(10)ABCDE</tl:barcodeContent>
+					</tl:epcAttributes>
+					<tl:plantLocationId>0614141.12345.1400</tl:plantLocationId>
+					<tl:productionLineId>Line24</tl:productionLineId>
+					<tl:lineManagerName>John Smith</tl:lineManagerName>
+					<tl:companyPrefix>0085412</tl:companyPrefix>
+					<tl:itemDetail>
+						<tl:internalMaterialCode>11002541210</tl:internalMaterialCode>
+						<tl:packagingItemCode type="GTIN-14"/>
+						<tl:countryDrugCode type="US_NDC542">82025030220</tl:countryDrugCode>
+						<tl:manufacturingDate>2017-04-11</tl:manufacturingDate>
+						<tl:countryMarket>US</tl:countryMarket>
+						<tl:extensionField>
+							<tl:fieldName>DRUG_CODE</tl:fieldName>
+							<tl:fieldValue>NDC542</tl:fieldValue>
+						</tl:extensionField>
+					</tl:itemDetail>
+				</tl:dispositionAssignedEventExtensions>
+			</ObjectEvent>
+		</EventList>
+	</EPCISBody>
+</epcis:EPCISDocument>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<epcis:EPCISDocument xmlns:cbvmda="urn:epcglobal:cbv:mda" xmlns:epcis="urn:epcglobal:epcis:xsd:1" xmlns:sbdh="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader" xmlns:tl="http://epcis.tracelink.com/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-nstance" creationDate="2018-10-02T07:15:00Z" schemaVersion="1.2" xsi:schemaLocation="urn:epcglobal:epcis:xsd:1 file:///C:/workspace-git/maps_xml_schema/release-obstruction/xmlSchema/pt_serialization/transaction/TL_EPCIS_EPCglobal-epcis-1_2.xsd">
+	<EPCISHeader>
+		<sbdh:StandardBusinessDocumentHeader>
+			<sbdh:HeaderVersion>1.0</sbdh:HeaderVersion>
+			<sbdh:Sender>
+				<sbdh:Identifier Authority="GLN">0358716000006</sbdh:Identifier>
+			</sbdh:Sender>
+			<sbdh:Receiver>
+				<sbdh:Identifier Authority="GLN">0303780000063</sbdh:Identifier>
+			</sbdh:Receiver>
+			<sbdh:DocumentIdentification>
+				<sbdh:Standard>EPCglobal</sbdh:Standard>
+				<sbdh:TypeVersion>1.0</sbdh:TypeVersion>
+				<sbdh:InstanceIdentifier>21</sbdh:InstanceIdentifier>
+				<sbdh:Type>Events</sbdh:Type>
+				<sbdh:CreationDateAndTime>2018-10-03T07:17:00Z</sbdh:CreationDateAndTime>
+			</sbdh:DocumentIdentification>
+		</sbdh:StandardBusinessDocumentHeader>
+	</EPCISHeader>
+	<EPCISBody>
+		<EventList>
+			<ObjectEvent>
+				<eventTime>2018-10-03T14:04:00Z</eventTime>
+				<eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
+				<epcList>
+					<epc>urn:epc:id:sgtin:0368220.011210.2PWT46W493</epc>
+					<epc>urn:epc:id:sgtin:0368220.011210.18NF89GR2N</epc>
+					<epc>urn:epc:id:sgtin:0368220.011210.23AAMV29XF</epc>
+				</epcList>
+				<action>ADD</action>
+				<bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
+				<disposition>urn:epcglobal:cbv:disp:active</disposition>
+				<readPoint>
+					<id>urn:epc:id:sgln:0358716.0.0</id>
+				</readPoint>
+				<bizLocation>
+					<id>urn:epc:id:sgln:0358716.0.0</id>
+				</bizLocation>
+				<extension>
+					<ilmd>
+						<cbvmda:lotNumber>000001</cbvmda:lotNumber>
+						<cbvmda:itemExpirationDate>2019-11-01</cbvmda:itemExpirationDate>
+					</ilmd>
+				</extension>
+				<tl:dispositionAssignedEventExtensions>
+					<tl:itemDetail>
+						<tl:packagingItemCode type="GTIN-14"/>
+					</tl:itemDetail>
+				</tl:dispositionAssignedEventExtensions>
+			</ObjectEvent>
+		</EventList>
+	</EPCISBody>
+</epcis:EPCISDocument>
