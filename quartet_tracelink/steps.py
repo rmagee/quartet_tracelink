@@ -15,7 +15,7 @@
 from quartet_output import steps
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 from quartet_tracelink.parsing.parser import TraceLinkEPCISParser
-
+from gs123.conversion import URNConverter
 
 class AddCommissioningDataStep(steps.AddCommissioningDataStep):
     def process_events(self, events: list):
@@ -24,10 +24,17 @@ class AddCommissioningDataStep(steps.AddCommissioningDataStep):
         object events.
         """
         env = get_default_environment()
-        template = 'quartet_tracelink/disposition_assigned.xml'
+        import pudb; pudb.set_trace()
         for event in events:
+            for epc in event.epc_list:
+                if ':sscc:' in epc:
+                    parsed_sscc = URNConverter(epc)
+                    event.company_prefix = parsed_sscc._company_prefix
+                    event.extension_digit = parsed_sscc._extension_digit
+                    break
+            event.template = env.get_template('quartet_tracelink/disposition_assigned.xml')
             event._env = env
-            event.template = env.get_template(template)
+ 
         return events
 
 
