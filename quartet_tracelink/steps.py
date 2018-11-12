@@ -24,7 +24,6 @@ class AddCommissioningDataStep(steps.AddCommissioningDataStep):
         object events.
         """
         env = get_default_environment()
-        import pudb; pudb.set_trace()
         for event in events:
             for epc in event.epc_list:
                 if ':sscc:' in epc:
