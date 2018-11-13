@@ -1,5 +1,10 @@
 <tl:dispositionAssignedEventExtensions>
-    <tl:itemDetail>
-        <tl:packagingItemCode type="GTIN-14"/>
-    </tl:itemDetail>
+  {% if event.extension_digit %}
+  <tl:filterValue>{{ event.extension_digit }}</tl:filterValue>
+  <tl:companyPrefix>{{ event.company_prefix }}</tl:companyPrefix>
+  {% else %}
+  <tl:itemDetail>
+    <tl:packagingItemCode type="GTIN-14"/>
+  </tl:itemDetail>
+  {% endif %}
 </tl:dispositionAssignedEventExtensions>
