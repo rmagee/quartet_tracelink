@@ -103,7 +103,7 @@ class TestRules(TestCase):
         self._create_step(db_rule)
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
-        self._create_epcpyyes_step(db_rule)
+        self._create_tracelink_epcpyyes_step(db_rule)
         self._create_task_step(db_rule)
         db_rule2 = self._create_transport_rule()
         self._create_transport_step(db_rule2)
@@ -304,6 +304,17 @@ class TestRules(TestCase):
         step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
                            'context.'
         step.save()
+
+    def _create_tracelink_epcpyyes_step(self, rule):
+        step = Step()
+        step.rule = rule
+        step.order = 4
+        step.name = 'Create EPCIS'
+        step.step_class = 'quartet_tracelink.steps.TracelinkOutputStep'
+        step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
+                           'context.'
+        step.save()
+    
 
     def _create_task(self, rule):
         task = Task()
