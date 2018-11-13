@@ -97,7 +97,7 @@ class TestRules(TestCase):
             task = Task.objects.get(name=task_name)
             self.assertEqual(task.status, 'FINISHED')
 
-    def test_rule_with_agg_comm_output(self):
+    def test_rule_with_agg_comm_sftp_output(self):
         self._create_destination_criterion()
         db_rule = self._create_rule()
         self._create_step(db_rule)
