@@ -12,6 +12,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
+import re
 from quartet_capture.rules import Step
 from quartet_output import steps
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
@@ -22,6 +23,9 @@ from quartet_output.steps import EPCPyYesOutputStep, ContextKeys, \
 from quartet_capture.rules import RuleContext
 from EPCPyYes.core.v1_2 import template_events
 from EPCPyYes.core.SBDH import sbdh
+from gs123.check_digit import calculate_check_digit
+
+sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
 
 class AddCommissioningDataStep(steps.AddCommissioningDataStep):
@@ -59,6 +63,18 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
     XML or JSON depending on the step parameter configuration.
     """
 
+    def get_gln_from_sgln(self, sgln):
+        match = sgln_regex.match(sgln)
+        if match:
+            parts = match.groups()
+            current_length =  len(parts[0] + parts[1])
+            if current_length < 12:
+                gln = parts[0] + (12-current_length) * '0' + parts[1]
+            else:
+                gln = parts[0] + parts[1]
+            return calculate_check_digit(gln)
+        return None
+    
     def generate_sbdh(self, header_version='1.0', sender_sgln=None,
                       receiver_sgln=None, doc_id_standard='EPCGlobal',
                       doc_id_type_version='1.0',
@@ -69,11 +85,11 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
         '''
         if sender_sgln and receiver_sgln:
             sender = sbdh.Partner(sbdh.PartnerType.SENDER,
-                                  sbdh.PartnerIdentification('SGLN',
-                                                             sender_sgln))
+                                  sbdh.PartnerIdentification('GLN',
+                                                             self.get_gln_from_sgln(sender_sgln)))
             receiver = sbdh.Partner(sbdh.PartnerType.RECEIVER,
-                                    sbdh.PartnerIdentification('SGLN',
-                                                               receiver_sgln))
+                                    sbdh.PartnerIdentification('GLN',
+                                                               self.get_gln_from_sgln(receiver_sgln)))
             partner_list = [sender, receiver]
             return sbdh.StandardBusinessDocumentHeader(partners=partner_list)
         return None
