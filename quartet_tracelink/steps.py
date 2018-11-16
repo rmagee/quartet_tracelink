@@ -25,6 +25,8 @@ from EPCPyYes.core.v1_2 import template_events
 from EPCPyYes.core.SBDH import sbdh
 from gs123.check_digit import calculate_check_digit
 
+
+
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
 
@@ -55,6 +57,8 @@ class OutputParsingStep(steps.OutputParsingStep):
         Returns the parser that uses the tracelink template EPCPyYes objects.
         """
         return TraceLinkEPCISParser
+
+
 
 
 class TracelinkOutputStep(EPCPyYesOutputStep):
@@ -137,6 +141,9 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                         receiver_sgln=destination_sgln
                     )
                     break
+            for event in all_events:
+                if event.event_time.endswith('+00:00') and event.event_timezone_offset != '+00:00':
+                    event.event_time = re.sub(r"\+00:00$", event.event_timezone_offset, event.event_time)
             epcis_document = template_events.EPCISEventListDocument(
                 all_events,
                 sbdh_out,
