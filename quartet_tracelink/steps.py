@@ -24,7 +24,8 @@ from quartet_capture.rules import RuleContext
 from EPCPyYes.core.v1_2 import template_events
 from EPCPyYes.core.SBDH import sbdh
 from gs123.check_digit import calculate_check_digit
-
+from dateutil import parser
+from pytz import timezone
 
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
@@ -98,6 +99,10 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             return sbdh.StandardBusinessDocumentHeader(partners=partner_list)
         return None
 
+    def format_datetime(self, dt_string):
+        dt_obj = parser.parse(dt_string).astimezone(timezone('UTC'))
+        return dt_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+        
     def execute(self, data, rule_context: RuleContext):
         """
         Pulls the object, agg, transaction and other events out of the context
@@ -143,7 +148,14 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                     break
             for event in all_events:
                 if event.event_time.endswith('+00:00') and event.event_timezone_offset != '+00:00':
-                    event.event_time = re.sub(r"\+00:00$", event.event_timezone_offset, event.event_time)
+                    converted_dt_string = re.sub(r"\+00:00$", event.event_timezone_offset, event.event_time)
+                    event.event_time = self.format_datetime(converted_dt_string)
+                else:
+                    event.event_time = self.format_datetime(event.event_time)
+
+                if event.record_time:
+                    event.record_time = self.format_datetime(event.record_time)
+            
             epcis_document = template_events.EPCISEventListDocument(
                 all_events,
                 sbdh_out,
