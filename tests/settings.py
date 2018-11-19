@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     "quartet_tracelink",
     'quartet_capture',
     'quartet_output',
-    'quartet_epcis'
+    'quartet_epcis',
+    'quartet_masterdata'
 ]
 
 SITE_ID = 1

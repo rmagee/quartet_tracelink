@@ -10,3 +10,5 @@ recommonmark
 
 
 # Additional test requirements go here
+quartet_output
+quartet_masterdata
