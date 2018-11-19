@@ -26,6 +26,7 @@ from EPCPyYes.core.SBDH import sbdh
 from gs123.check_digit import calculate_check_digit
 from dateutil import parser
 from pytz import timezone
+from quartet_masterdata.models import Company
 
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
@@ -68,7 +69,20 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
     XML or JSON depending on the step parameter configuration.
     """
 
+    def get_gln_from_company(self, sgln):
+        '''
+        Retrieves GLN13 from company if matched by SGLN.
+        '''
+        try:
+            return Company.objects.get(SGLN=sgln).GLN13
+        except Company.DoesNotExist:
+            return None
+    
     def get_gln_from_sgln(self, sgln):
+        company_gln = self.get_gln_from_company(sgln)
+        if company_gln:
+            # return the hardcoded version.
+            return company_gln
         match = sgln_regex.match(sgln)
         if match:
             parts = match.groups()
