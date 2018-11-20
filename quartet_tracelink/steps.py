@@ -114,8 +114,11 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
         return None
 
     def format_datetime(self, dt_string):
-        dt_obj = parser.parse(dt_string).astimezone(timezone('UTC'))
-        return dt_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+        try:
+            dt_obj = parser.parse(dt_string).astimezone(timezone('UTC'))
+            return dt_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
+        except:
+            return dt_string
         
     def execute(self, data, rule_context: RuleContext):
         """
