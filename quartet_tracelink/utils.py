@@ -55,7 +55,7 @@ class TraceLinkHelper:
            capture_models.StepParameter.objects.create(
                name='content-type',
                value='text/xml',
-               step=step_1()
+               step=step_1
            )
            step_2 = capture_models.Step()
            step_2.name = 'Tracelink Number Reponse Parser'
