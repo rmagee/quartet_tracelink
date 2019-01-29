@@ -12,9 +12,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
+import os
 from django.utils.translation import gettext as _
 from quartet_capture import models as capture_models
 from quartet_output import models as output_models
+from quartet_templates import models as template_models
+from list_based_flavorpack.models import ListBasedRegion, ProcessingParameters
+from serialbox import models as sb_models
+
 
 class TraceLinkHelper:
     """
@@ -32,43 +37,45 @@ class TraceLinkHelper:
                           'TracelinkNumberResponseParserStep')
 
     def create_number_rule(self):
-        self._create_rule()
-        self._create_endpoints()
+        self.create_rule()
+        self.create_example_pool()
 
-    def _create_rule(self):
+    def create_rule(self):
         rule, created = capture_models.Rule.objects.get_or_create(
             name="Tracelink Number Request"
         )
         if created:
-           rule.description = 'Requests numbers from Tracelink - To be used ' \
-                              'from Number Range module (Allocate)'
-           rule.save()
-           step_1 = capture_models.Step()
-           step_1.name = 'Number Request Transport Step'
-           step_1.description = ('Requests numbers and passes the response '
-                                 'to the next step (for parsing)')
-           step_1.step_class = ('list_based_flavorpack.steps.'
-                                'NumberRequestTransportStep')
-           step_1.order = 1
-           step_1.rule = rule
-           step_1.save()
-           capture_models.StepParameter.objects.create(
-               name='content-type',
-               value='text/xml',
-               step=step_1
-           )
-           step_2 = capture_models.Step()
-           step_2.name = 'Tracelink Number Reponse Parser'
-           step_2.description = ('Parses numbers from Tracelink and writes '
-                                 'them persistently for use in Number '
-                                 'Range module.')
-           step_2.step_class = ('third_party_flavors.tracelink_number_response'
-                                '_step.TracelinkNumberResponseParserStep')
-           step_2.order = 2
-           step_2.rule = rule
-           step_2.save()
+            rule.description = 'Requests numbers from Tracelink - To be used ' \
+                               'from Number Range module (Allocate)'
+            rule.save()
+            step_1 = capture_models.Step()
+            step_1.name = 'Number Request Transport Step'
+            step_1.description = ('Requests numbers and passes the response '
+                                  'to the next step (for parsing)')
+            step_1.step_class = ('list_based_flavorpack.steps.'
+                                 'NumberRequestTransportStep')
+            step_1.order = 1
+            step_1.rule = rule
+            step_1.save()
+            capture_models.StepParameter.objects.create(
+                name='content-type',
+                value='text/xml',
+                step=step_1
+            )
+            step_2 = capture_models.Step()
+            step_2.name = 'Tracelink Number Reponse Parser'
+            step_2.description = ('Parses numbers from Tracelink and writes '
+                                  'them persistently for use in Number '
+                                  'Range module.')
+            step_2.step_class = (
+                'third_party_flavors.tracelink_number_response'
+                '_step.TracelinkNumberResponseParserStep')
+            step_2.order = 2
+            step_2.rule = rule
+            step_2.save()
+        return rule
 
-    def _create_endpoints(self):
+    def create_endpoints(self):
         """
         Returns a two-tuple with the itest EndPoint model reference and
         the production.  Will create one or both if they do not exist.
@@ -94,19 +101,91 @@ class TraceLinkHelper:
             )
         return itest, prod
 
+    def create_example_authentication(self):
+        try:
+            auth = output_models.AuthenticationInfo.objects.get(
+                username='example_user'
+            )
+        except output_models.AuthenticationInfo.DoesNotExist:
+            auth = output_models.AuthenticationInfo.objects.create(
+                username='example_user',
+                password='example',
+                description='Example auth.',
+                type='Basic'
+            )
+        return auth
+
+    def create_example_pool(self):
+        curpath = os.path.dirname(__file__)
+        f = open(os.path.join(curpath,
+                              './templates/quartet_tracelink/number_request.xml'))
+        template_text = f.read()
+        f.close()
+        itest, prod = self.create_endpoints()
+        try:
+            template = template_models.Template.objects.get(
+                name='Tracelink Number Request'
+            )
+        except template_models.Template.DoesNotExist:
+            template = template_models.Template.objects.create(
+                name='Tracelink Number Request',
+                content=template_text,
+                description='Tracelink number request template.'
+            )
+
+        pool, created = sb_models.Pool.objects.get_or_create(
+            readable_name='Example Tracelink Pool',
+            machine_name='00355555123459'
+        )
+        if created:
+            region = ListBasedRegion(
+                readable_name='Example Tracelink Region',
+                machine_name='00355555123459',
+                active=True,
+                order=1,
+                number_replenishment_size=5000,
+                processing_class_path='list_based_flavorpack.processing_classes.third_party_processing.processing.ThirdPartyProcessingClass',
+                end_point=itest,
+                rule=self.create_rule(),
+                authentication_info=self.create_example_authentication(),
+                template=template,
+                pool=pool
+            )
+            region.save()
+            params = {
+                'randomized_number':'X',
+                'object_key_value':'GTIN Value Goes Here',
+                'object_key_name':'GTIN',
+                'encoding_type':'SGTIN',
+                'id_type':'GS1_SER',
+                'receiving_system': 'Receiving GLN 13 Goes Here',
+                'sending_system': 'Sender GLN 13 Goes Here'
+            }
+            self.create_processing_parameters(params, region)
+
+    def create_processing_parameters(self, input: dict, region):
+        for k, v in input.items():
+            try:
+                ProcessingParameters.objects.get(key=k,
+                                                 list_based_region=region)
+            except ProcessingParameters.DoesNotExist:
+                ProcessingParameters.objects.create(key=k,
+                                                    value=v,
+                                                    list_based_region=region)
+
 
 def create_example_rule():
     try:
         endpoint = output_models.EndPoint.objects.get(
-            name=('Local SFTP Server')
+            name=('Tracelink Example SFTP Server')
         )
         print(
             '\033[0;31;40m Found existing endpoint with location %s' % endpoint.urn)
     except output_models.EndPoint.DoesNotExist:
         endpoint = output_models.EndPoint.objects.create(
-            name=_('Local SFTP Server'),
+            name=_('Tracelink Example SFTP Server'),
             urn=_(
-                'SFTP://itestb2b.tracelink.com:5022/home/[*** CUSTOMER FOLDER ****]/inbox/SNX_DISPOSITION_ASSIGNED/')
+                'sftp://itestb2b.tracelink.com:5022/home/[*** CUSTOMER FOLDER ****]/inbox/SNX_DISPOSITION_ASSIGNED/')
         )
         print(
             "\033[0;32;40m Created a new endpoint- MAKE sure to change the URN value!!! \n")

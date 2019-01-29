@@ -1,0 +1,17 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:tracelink:soap">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:serialNumbersRequest>
+         <SendingSystem>{{ sending_system }}</SendingSystem>
+         <ReceivingSystem>{{ receiving_system }}</ReceivingSystem>
+         <IdType>{{ id_type }}</IdType>
+         <EncodingType>{{ encoding_type }}</EncodingType>
+         <Size>{{ allocate.size }}</Size>
+         <ObjectKey>
+            <Name>{{ object_key_name }}</Name>
+            <Value>{{ object_key_value }}</Value>
+         </ObjectKey>
+         <RequestRandomizedNumber>{{ randomized_number }}</RequestRandomizedNumber>
+      </urn:serialNumbersRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
