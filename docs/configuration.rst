@@ -13,6 +13,16 @@ that are required by the tracelink platform.  The tracelink platform does
 not support EPCIS 1.2 or even standard EPCIS 1.1 unless special tracelink
 tags are put into the EPCIS data.
 
+
+Add Commissioning Data Step
+---------------------------
+As the second step, add the following:
+
+quartet_tracelink.steps.AddCommissioningDataStep
+
+This renders commissioning events with the tracelink special gtin field along
+with the old EPCIS 1.1 format since tracelink does not support EPCIS 1.2.
+
 Output Step
 -----------
 As the penultimate step, add the following:
