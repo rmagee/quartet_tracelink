@@ -263,10 +263,10 @@ def create_example_rule():
             rule=rule
         )
         capture_models.Step.objects.create(
-            name=_('Render EPCIS XML'),
+            name=_('Render Tracelink XML'),
             description=_(
                 'Pulls any EPCPyYes objects from the context and creates an XML message'),
-            step_class='quartet_output.steps.EPCPyYesOutputStep',
+            step_class='quartet_tracelink.steps.TracelinkOutputStep',
             order=4,
             rule=rule
         )
