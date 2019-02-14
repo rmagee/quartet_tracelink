@@ -3,6 +3,13 @@ stages:
     - build-docs
     - pypi
 
+services:
+  - name: mendhak/http-https-echo:latest
+    alias: testhost
+  - name: atmoz/sftp
+    alias: testsftphost
+    command: ["foo:pass:1001::upload"]
+
 python3_5_unit_test:
   image: seriallab/python3.5dev
   stage: test-python
