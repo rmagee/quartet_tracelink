@@ -7,8 +7,7 @@ sphinx_rtd_theme
 sphinx
 recommonmark
 
-
-
 # Additional test requirements go here
+django
 quartet_output
 quartet_masterdata
