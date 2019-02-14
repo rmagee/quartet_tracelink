@@ -174,7 +174,7 @@ class TraceLinkHelper:
                                                     list_based_region=region)
 
 
-def create_example_rule():
+def create_example_rule(rule_name="TraceLink EPCIS Output Filter"):
     try:
         endpoint = output_models.EndPoint.objects.get(
             name=('Tracelink Example SFTP Server')
@@ -221,12 +221,12 @@ def create_example_rule():
         print('\033[0;32;40m Created a new Output Criteria.')
     try:
         rule = capture_models.Rule.objects.get(
-            name='TL EPCIS Output Filter'
+            name=rule_name
         )
         print('\033[0;31;40m found an existing example rule!')
     except:
         rule = capture_models.Rule.objects.create(
-            name=_('TL EPCIS Output Filter'),
+            name=rule_name,
             description=_('Will inspect inbound messages for output '
                           'processing.')
         )
