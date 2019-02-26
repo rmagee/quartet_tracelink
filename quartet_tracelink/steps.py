@@ -15,6 +15,7 @@
 import re
 from quartet_capture.rules import Step
 from quartet_output import steps
+from datetime import datetime
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 from quartet_tracelink.parsing.parser import TraceLinkEPCISParser
 from gs123.conversion import URNConverter
@@ -110,7 +111,15 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                                                                self.get_gln_from_sgln(
                                                                    receiver_sgln)))
             partner_list = [sender, receiver]
-            return sbdh.StandardBusinessDocumentHeader(partners=partner_list)
+            creation_date_and_time = creation_date_and_time or datetime.utcnow().isoformat()
+            creation_date_and_time = self.format_datetime(creation_date_and_time)
+            document_identification = sbdh.DocumentIdentification(
+                creation_date_and_time=creation_date_and_time
+            )
+            return sbdh.StandardBusinessDocumentHeader(
+                partners=partner_list,
+                document_identification=document_identification
+            )
         return None
 
     def format_datetime(self, dt_string, increment_dates=False,
