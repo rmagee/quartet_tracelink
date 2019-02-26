@@ -26,13 +26,13 @@
                         {% include event.template %}
                     {% endfor %}
                 {% endif %}
-                <extension>
                 {% if transformation_events|length > 0 %}
+                     <extension>
                     {% for event in transformation_events %}
                         {% include event.template %}
                     {% endfor %}
+                     </extension>
                 {% endif %}
-                </extension>
             {% endblock %}
         </EventList>
     </EPCISBody>

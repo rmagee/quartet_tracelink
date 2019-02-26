@@ -39,7 +39,7 @@
                         </quantityElement>
                     </quantityList>
                     <sourceList>
-                        <source type="urn:epcglobal:cbv:sdt:possessing_party">
+                        <source type="urn:epcglobal:cbv:sdt:owning_party">
                             urn:epc:id:sgln:305555.123456.0
                         </source>
                         <source type="urn:epcglobal:cbv:sdt:location">

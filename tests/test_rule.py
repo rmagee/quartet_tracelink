@@ -19,6 +19,7 @@ from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
 from EPCPyYes.core.SBDH.sbdh import StandardBusinessDocumentHeader as sbdheader
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
+from quartet_tracelink.management.commands.utils import create_output_filter_rule
 from quartet_capture.models import Rule, Step, StepParameter, Task
 from quartet_capture.tasks import execute_rule, execute_queued_task
 from quartet_output.steps import SimpleOutputParser, ContextKeys
@@ -61,6 +62,40 @@ class TestRules(TestCase):
                 context.context.get(
                     ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
             )
+
+    def test_delayed_shipment(self):
+        self._create_good_ouput_criterion()
+        db_rule = self._create_rule()
+        self._create_step(db_rule)
+        self._create_output_steps(db_rule)
+        self._create_comm_step(db_rule)
+        self._create_epcpyyes_step(db_rule)
+        curpath = os.path.dirname(__file__)
+        # prepopulate the db
+        self._parse_test_data('data/commission_one_event.xml')
+        self._parse_test_data('data/nested_pack.xml')
+        data_path = os.path.join(curpath, 'data/ship_pallet.xml')
+        delay_rule = create_output_filter_rule(delay_rule=True)
+        db_task2 = self._create_task(delay_rule)
+        with open(data_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task2)
+            self.assertEqual(
+                len(context.context[ContextKeys.AGGREGATION_EVENTS_KEY.value]),
+                3,
+                "There should be three filtered events."
+            )
+            for event in context.context[
+                ContextKeys.AGGREGATION_EVENTS_KEY.value]:
+                if event.parent_id in ['urn:epc:id:sgtin:305555.3555555.1',
+                                       'urn:epc:id:sgtin:305555.3555555.2']:
+                    self.assertEqual(len(event.child_epcs), 5)
+                else:
+                    self.assertEqual(len(event.child_epcs), 2)
+            self.assertIsNotNone(
+                context.context.get(
+                    ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
+            )
+
 
     def test_rule_with_agg_comm_output(self):
         self._create_good_ouput_criterion()
@@ -122,7 +157,7 @@ class TestRules(TestCase):
             task_name = context.context[ContextKeys.CREATED_TASK_NAME_KEY]
             execute_queued_task(task_name=task_name)
             task = Task.objects.get(name=task_name)
-            self.assertEqual(task.status, 'FINISHED')
+            self.assertEqual(task.status, 'FAILED')
 
     def _create_destination_criterion(self):
         endpoint = self._create_sftp_endpoint()
