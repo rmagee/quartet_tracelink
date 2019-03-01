@@ -1,0 +1,22 @@
+{% if additional_context and additional_context['masterdata'] %}
+<extension>
+    <EPCISMasterData>
+        <VocabularyList>
+            <Vocabulary type="urn:epcglobal:epcis:vtype:Location">
+                <VocabularyElementList>
+                    {% for sgln, dict in additional_context['masterdata'].items() %}
+                        <VocabularyElement id="{{ sgln }}">
+                            <attribute id="urn:epcglobal:cbv:mda#name">{{ dict['name'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">{{ dict['address1'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#city">{{ dict['city'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#state">{{ dict['state_province'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#postalCode">{{ dict['postal_code'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#countryCode">{{ dict['country'] }}</attribute>
+                        </VocabularyElement>
+                    {% endfor %}
+                </VocabularyElementList>
+            </Vocabulary>
+        </VocabularyList>
+    </EPCISMasterData>
+</extension>
+{% endif %}

@@ -1,27 +1,28 @@
 =============================
-quartet_tr4c3l1nk
+quartet_tracelink
 =============================
 
-.. image:: https://gitlab.com/serial-lab/quartet_tr4c3l1nk/badges/master/coverage.svg
-   :target: https://gitlab.com/serial-lab/quartet_tr4c3l1nk/pipelines
-.. image:: https://gitlab.com/serial-lab/quartet_tr4c3l1nk/badges/master/build.svg
-   :target: https://gitlab.com/serial-lab/quartet_tr4c3l1nk/commits/master
-.. image:: https://badge.fury.io/py/quartet_tr4c3l1nk.svg
-    :target: https://badge.fury.io/py/quartet_tr4c3l1nk
+.. image:: https://gitlab.com/serial-lab/quartet_tracelink/badges/master/coverage.svg
+   :target: https://gitlab.com/serial-lab/quartet_tracelink/pipelines
+.. image:: https://gitlab.com/serial-lab/quartet_tracelink/badges/master/build.svg
+   :target: https://gitlab.com/serial-lab/quartet_tracelink/commits/master
+.. image:: https://badge.fury.io/py/quartet_tracelink.svg
+    :target: https://badge.fury.io/py/quartet_tracelink
 
-An EPCIS to TraceLink Codec
+An EPCIS to TraceLink Codec that overcomes (or tries to) many of the
+quirks and well-known shortcomings of the Tracelink EPCIS interface.
 
 Documentation
 -------------
 
-The full documentation is at https://serial-lab.gitlab.io/quartet_tr4c3l1nk/
+The full documentation is at https://serial-lab.gitlab.io/quartet_tracelink/
 
 Quickstart
 ----------
 
-Install quartet_tr4c3l1nk::
+Install quartet_tracelink::
 
-    pip install quartet_tr4c3l1nk
+    pip install quartet_tracelink
 
 Add it to your `INSTALLED_APPS`:
 
@@ -29,27 +30,23 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'quartet_tr4c3l1nk.apps.QuartetTr4c3l1nkConfig',
+        'quartet_tracelink.apps.QuartetTracelinkConfig',
         ...
     )
 
-Add quartet_tr4c3l1nk's URL patterns:
+Add quartet_tracelink's URL patterns:
 
 .. code-block:: python
 
-    from quartet_tr4c3l1nk import urls as quartet_tr4c3l1nk_urls
+    from quartet_tracelink import urls as quartet_tracelink_urls
 
 
     urlpatterns = [
         ...
-        url(r'^', include(quartet_tr4c3l1nk_urls)),
+        url(r'^', include(quartet_tracelink_urls)),
         ...
     ]
 
-Features
---------
-
-* TODO
 
 Running Tests
 -------------

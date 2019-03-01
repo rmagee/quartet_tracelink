@@ -92,7 +92,9 @@ class TestQuartet_tr4c3l1nk(TestCase):
 
     def create_object_event(self, biz_location, business_transaction_list,
                             destination_list, epcs, now, read_point,
-                            source_list, tzoffset, action=None, ilmd=None):
+                            source_list, tzoffset, action=None, ilmd=None,
+                            biz_step=BusinessSteps.commissioning.value,
+                            additional_context={}):
         env = get_default_environment()
         # create the event
         event_id = str(uuid.uuid4())
@@ -100,7 +102,7 @@ class TestQuartet_tr4c3l1nk(TestCase):
                          record_time=now,
                          action=action,
                          epc_list=epcs,
-                         biz_step=BusinessSteps.commissioning.value,
+                         biz_step=biz_step,
                          disposition=Disposition.encoded.value,
                          business_transaction_list=business_transaction_list,
                          biz_location=biz_location,
@@ -111,9 +113,11 @@ class TestQuartet_tr4c3l1nk(TestCase):
                          event_id=event_id,
                          env=env,
                          template='quartet_tracelink/disposition_assigned.xml')
+        if len(additional_context) > 0:
+            oe._context = {**oe._context, **additional_context}
         return oe
 
-    def create_object_event_template(self):
+    def create_object_event_template(self, biz_step=BusinessSteps.commissioning.value):
         epcs = self.create_epcs()
         # get the current time and tz
         now, tzoffset = get_current_utc_time_and_offset()
@@ -132,7 +136,7 @@ class TestQuartet_tr4c3l1nk(TestCase):
                                       destination_list, epcs, now, read_point,
                                       source_list, tzoffset,
                                       action=Action.add.value,
-                                      ilmd=ilmd)
+                                      ilmd=ilmd, biz_step=biz_step)
         oe.clean()
         return oe
 
@@ -152,6 +156,26 @@ class TestQuartet_tr4c3l1nk(TestCase):
         self.assertIn('<action>ADD</action>', data,
                       'EPCIS action not present.')
         self.assertIn(BusinessSteps.commissioning.value, data,
+                      'Business step not present')
+        self.assertIn(Disposition.encoded.value, data,
+                      'Disposition not present')
+
+    def test_shipping_event_template(self):
+        oe = self.create_object_event_template(biz_step=BusinessSteps.shipping.value)
+        # render the event using it's default template
+        data = oe.render()
+        print(oe.render_json())
+        print(oe.render_pretty_json())
+        print(data)
+        # make sure the data we want is there
+        self.assertTrue('+00:00' in data)
+        self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1000</epc>', data,
+                      'URN for start SGTIN not present.')
+        self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1001</epc>', data,
+                      'URN for start SGTIN not present.')
+        self.assertIn('<action>ADD</action>', data,
+                      'EPCIS action not present.')
+        self.assertIn(BusinessSteps.shipping.value, data,
                       'Business step not present')
         self.assertIn(Disposition.encoded.value, data,
                       'Disposition not present')

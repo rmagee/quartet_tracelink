@@ -1,0 +1,63 @@
+<epcis:EPCISDocument
+        xmlns:epcis="urn:epcglobal:epcis:xsd:1"
+        xmlns:cbvmd="urn:epcglobal:cbv:mda"
+        schemaVersion="1.2" creationDate="2018-01-22T20:34:00.706115">
+    <EPCISBody>
+        <EventList>
+            <ObjectEvent>
+                <eventTime>2018-03-22T22:51:49.294565+00:00</eventTime>
+                <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+                <epcList>
+                    <epc>urn:epc:id:sgtin:305555.5555555.1</epc>
+                </epcList>
+                <action>OBSERVE</action>
+                <bizStep>urn:epcglobal:cbv:bizstep:shipping</bizStep>
+                <disposition>urn:epcglobal:cbv:disp:in_transit</disposition>
+                <readPoint>
+                    <id>urn:epc:id:sgln:305555.123456.12</id>
+                </readPoint>
+                <bizLocation>
+                    <id>urn:epc:id:sgln:305555.123456.0</id>
+                </bizLocation>
+                				<bizTransactionList>
+					<bizTransaction type="urn:epcglobal:cbv:btt:RMA">
+            18QU41
+        </bizTransaction>
+				</bizTransactionList>
+                <extension>
+                    <quantityList>
+                        <quantityElement>
+                            <epcClass>urn:epc:idpat:sgtin:305555.0555555.*
+                            </epcClass>
+                            <quantity>5</quantity>
+                        </quantityElement>
+                        <quantityElement>
+                            <epcClass>urn:epc:idpat:sgtin:305555.0555555.*
+                            </epcClass>
+                            <quantity>14.5</quantity>
+                            <uom>LB</uom>
+                        </quantityElement>
+                    </quantityList>
+                    <sourceList>
+                        <source type="urn:epcglobal:cbv:sdt:owning_party">
+                            urn:epc:id:sgln:305555.123456.0
+                        </source>
+                        <source type="urn:epcglobal:cbv:sdt:location">
+                            urn:epc:id:sgln:305555.123456.12
+                        </source>
+                    </sourceList>
+                    <destinationList>
+                        <destination
+                                type="urn:epcglobal:cbv:sdt:owning_party">
+                            urn:epc:id:sgln:309999.111111.0
+                        </destination>
+                        <destination
+                                type="urn:epcglobal:cbv:sdt:location">
+                            urn:epc:id:sgln:309999.111111.233
+                        </destination>
+                    </destinationList>
+                </extension>
+            </ObjectEvent>
+        </EventList>
+    </EPCISBody>
+</epcis:EPCISDocument>

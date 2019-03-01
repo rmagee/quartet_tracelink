@@ -10,5 +10,9 @@
     {% endif %}
     {% include "epcis/business_data.xml" %}
     {% include "epcis/extension.xml" %}
-    {% include "quartet_tracelink/disposition_assigned_extension.xml" %}
+    {% if additional_context and event.biz_step and 'shipping' in event.biz_step %}
+        {% include "quartet_tracelink/shipping_event_extension.xml" %}
+    {% else %}
+        {% include "quartet_tracelink/disposition_assigned_extension.xml" %}
+    {% endif %}
 </ObjectEvent>

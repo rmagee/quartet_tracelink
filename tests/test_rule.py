@@ -17,7 +17,7 @@ from django.core.exceptions import ValidationError
 from EPCPyYes.core.v1_2.events import EventType
 from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
-from EPCPyYes.core.SBDH.sbdh import StandardBusinessDocumentHeader as sbdheader
+from quartet_masterdata.models import Company, Location
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
 from quartet_tracelink.management.commands.utils import create_output_filter_rule
 from quartet_capture.models import Rule, Step, StepParameter, Task
@@ -64,9 +64,13 @@ class TestRules(TestCase):
             )
 
     def test_delayed_shipment(self):
-        self._create_good_ouput_criterion()
+        self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.0')
+        self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.0', type=Location)
+        self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.12')
+        self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.233', type=Location)
+        self._create_shipping_ouput_criterion(event_type=EventType.Object.value)
         db_rule = self._create_rule()
-        self._create_step(db_rule)
+        self._create_step(db_rule, criteria_name='Shipping Criteria')
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
         self._create_epcpyyes_step(db_rule)
@@ -74,7 +78,7 @@ class TestRules(TestCase):
         # prepopulate the db
         self._parse_test_data('data/commission_one_event.xml')
         self._parse_test_data('data/nested_pack.xml')
-        data_path = os.path.join(curpath, 'data/ship_pallet.xml')
+        data_path = os.path.join(curpath, 'data/delayed_ship_pallet.xml')
         delay_rule = create_output_filter_rule(delay_rule=True)
         db_task2 = self._create_task(delay_rule)
         with open(data_path, 'r') as data_file:
@@ -82,7 +86,6 @@ class TestRules(TestCase):
             self.assertEqual(
                 len(context.context[ContextKeys.AGGREGATION_EVENTS_KEY.value]),
                 3,
-                "There should be three filtered events."
             )
             for event in context.context[
                 ContextKeys.AGGREGATION_EVENTS_KEY.value]:
@@ -173,14 +176,12 @@ class TestRules(TestCase):
         eoc.save()
         return eoc
     
-    def _create_good_ouput_criterion(self):
+    def _create_good_ouput_criterion(self, event_type=EventType.Transaction.value):
         endpoint = self._create_endpoint()
         auth = self._create_auth()
         eoc = EPCISOutputCriteria()
         eoc.name = "Test Criteria"
-        eoc.action = "ADD"
-        eoc.event_type = EventType.Transaction.value
-        eoc.disposition = Disposition.in_transit.value
+        eoc.event_type = event_type
         eoc.biz_step = BusinessSteps.shipping.value
         eoc.biz_location = 'urn:epc:id:sgln:305555.123456.0'
         eoc.read_point = 'urn:epc:id:sgln:305555.123456.12'
@@ -188,6 +189,18 @@ class TestRules(TestCase):
         eoc.source_id = 'urn:epc:id:sgln:305555.123456.12'
         eoc.destination_type = 'urn:epcglobal:cbv:sdt:location'
         eoc.destination_id = 'urn:epc:id:sgln:309999.111111.233'
+        eoc.authentication_info = auth
+        eoc.end_point = endpoint
+        eoc.save()
+        return eoc
+
+    def _create_shipping_ouput_criterion(self, event_type=EventType.Object.value):
+        endpoint = self._create_endpoint()
+        auth = self._create_auth()
+        eoc = EPCISOutputCriteria()
+        eoc.name = "Shipping Criteria"
+        eoc.event_type = event_type
+        eoc.biz_step = BusinessSteps.shipping.value
         eoc.authentication_info = auth
         eoc.end_point = endpoint
         eoc.save()
@@ -297,7 +310,7 @@ class TestRules(TestCase):
         step_parameter.value = put_data
         step_parameter.save()
 
-    def _create_step(self, rule):
+    def _create_step(self, rule, criteria_name='Test Criteria'):
         step = Step()
         step.rule = rule
         step.order = 1
@@ -308,7 +321,7 @@ class TestRules(TestCase):
         step_parameter = StepParameter()
         step_parameter.step = step
         step_parameter.name = 'EPCIS Output Criteria'
-        step_parameter.value = 'Test Criteria'
+        step_parameter.value = criteria_name
         step_parameter.save()
         return step
 
@@ -349,7 +362,25 @@ class TestRules(TestCase):
         step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
                            'context.'
         step.save()
-    
+
+    def _create_company_from_sgln(self, sgln, type=Company):
+        from gs123.check_digit import calculate_check_digit
+        gln13 = sgln.split(':')[-1]
+        gln13 = gln13.split('.')
+        gln13 = '%s%s' % (gln13[0], gln13[1])
+        gln13 = calculate_check_digit(gln13)
+        print('gln = %s', gln13)
+        type.objects.create(
+            name='unit test company %s' % gln13,
+            GLN13=gln13,
+            SGLN=sgln,
+            address1='123 Unit Test Street',
+            address2='Unit 2028',
+            postal_code='12345',
+            city='Unit Testville',
+            state_province='PA',
+            country='US'
+        )
 
     def _create_task(self, rule):
         task = Task()

@@ -15,20 +15,23 @@
 import re
 from quartet_capture.rules import Step
 from quartet_output import steps
-from datetime import datetime
+from datetime import datetime, date
+from quartet_masterdata.db import DBProxy
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 from quartet_tracelink.parsing.parser import TraceLinkEPCISParser
 from gs123.conversion import URNConverter
 from quartet_output.steps import EPCPyYesOutputStep, ContextKeys, \
     FilteredEventStepMixin
 from quartet_capture.rules import RuleContext
-from EPCPyYes.core.v1_2 import template_events
+from EPCPyYes.core.v1_2 import template_events, events
+from EPCPyYes.core.v1_2.CBV import business_transactions
 from EPCPyYes.core.SBDH import sbdh
 from gs123.check_digit import calculate_check_digit
 from dateutil import parser
 from datetime import timedelta
 from pytz import timezone
 from quartet_masterdata.models import Company
+
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
@@ -230,6 +233,8 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 destination_sgln = destination.destination
         return destination_sgln, source_sgln
 
+
+
     def _get_gtin(self, event: template_events.ObjectEvent):
         """
         Will iterate through the event epcs and get the gtin 14 value
@@ -267,8 +272,11 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
         )
         filtered_events = self.get_filtered_events()
         self.info('Found %s filtered events.' % len(filtered_events))
-        if len(filtered_events) >= 0:
+        if len(filtered_events) > 0:
+            self.transform_event(filtered_events[0])
+            self.transform_business_transaction(filtered_events[0])
             dest, source = self.get_sgln_info(filtered_events[0])
+            db_records = self.get_partner_info_by_sgln(filtered_events[0])
             sbdh = self.generate_sbdh(
                 sender_sgln = source,
                 receiver_sgln = dest
@@ -280,7 +288,11 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
                 sbdh,
                 template=env.get_template(
                     'quartet_tracelink/tracelink_epcis_events_document.xml'
-                )
+                ),
+                additional_context={
+                    'masterdata':db_records,
+                    'transaction_date': datetime.utcnow().date().isoformat()
+                }
             )
             if self.get_boolean_parameter('JSON', False):
                 data = epcis_document.render_json()
@@ -294,9 +306,70 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
                 ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value
             ] = data
 
+    def transform_event(self, event: events.EPCISBusinessEvent):
+        """
+        Override this to transform any data in a filtered event.
+        :param event: The event that was filtered.
+        :return: None.
+        """
+        pass
+
+
+    def transform_business_transaction(self, event: events.EPCISBusinessEvent):
+        """
+        Transforms an inbound event into a different one since Tracelink
+        has very odd support for EPCIS.  As of this writing they only
+        support despatch advice events for shipping business steps.  Strange.
+        :param event: The event with the business step to transform.
+        :return: None
+        """
+        if self.get_boolean_parameter('Transform Business Transaction', False):
+            transaction_source_type = self.get_parameter('Transaction Source Type')
+            transaction_destination_type = self.get_parameter('Transaction Destination Type')
+            business_transaction_prefix = self.get_parameter('Business Transaction Prefix','')
+            replace = self.get_parameter('Replace','')
+
+            for transaction in event.business_transaction_list:
+                if transaction.type == transaction_source_type:
+                    transaction.type = transaction_destination_type
+                    val = '%s%s' % (business_transaction_prefix,
+                                    transaction.biz_transaction.strip()
+                                    .replace(replace,''))
+                    transaction.biz_transaction = val
+
+
+    def get_partner_info_by_sgln(self, event):
+        """
+        Will lookup partner info based on the SGLNs in the source and
+        destination events.
+        :return: A list of epcpyyes partner events.
+        """
+        sglns = []
+        proxy = DBProxy()
+        for source in event.source_list:
+            sglns.append(source.source)
+        for destination in event.destination_list:
+            sglns.append(destination.destination)
+        return proxy.get_epcis_master_data_locations(sglns)
+
     @property
     def declared_parameters(self):
-        return {}
+        return {
+            'Transform Business Transaction': 'Bookean, default is False.  If this is true,'
+                               ' the step will attempt to transform a business '
+                               'transaction using the parameters below.',
+            'Transaction Source Type': 'The transaction event type you are '
+                                       'looking to transform.  If found, the '
+                                       'step will attempt to transform it.',
+            'Transaction Destination Type': 'This will be the replaced '
+                                               'value.',
+            'Business Transaction Prefix':'If this is specified, the step '
+                                          'will append this to any business '
+                                          'transactions that are being '
+                                          'transformed.',
+            'Replace': 'Put a string value you would like to replace in '
+                        'the business transaction source transaction string. '
+        }
 
     def on_failure(self):
         pass

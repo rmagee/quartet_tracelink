@@ -1,0 +1,5 @@
+<tl:shippingEventExtensions>
+    <tl:transactionDate>{{ additional_context['transaction_date'] }}</tl:transactionDate>
+    <tl:shipToCountryCode>US</tl:shipToCountryCode>
+    <tl:salesDistributionType>INCOUNTRYTRANSFER</tl:salesDistributionType>
+</tl:shippingEventExtensions>

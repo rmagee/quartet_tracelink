@@ -106,6 +106,45 @@ def create_output_filter_rule(rule_name='Tracelink Delayed Output Filter',
                 order=7,
                 rule=rule
             )
+            transform_switch = models.StepParameter.objects.create(
+                name='Transform Business Transaction',
+                value='True',
+                description=_('Whether or not to preform any transformations '
+                              'on the business transaction section.  Default:'
+                              'False.  Set to True or False.'),
+                step = render_events
+            )
+            trans_source_type = models.StepParameter.objects.create(
+                name='Transaction Source Type',
+                value='urn:epcglobal:cbv:btt:RMA',
+                description='This is the source we are looking to change. '
+                            'This value will be replaced with the destination '
+                            'type value.',
+                step=render_events
+
+            )
+            trans_dest_type = models.StepParameter.objects.create(
+                name='Transaction Destination Type',
+                value='urn:epcglobal:cbv:btt:desadv',
+                description='This is the value that will replace the source '
+                            'type if the source type is found.',
+                step=render_events
+            )
+            btf = models.StepParameter.objects.create(
+                name='Business Transaction Prefix',
+                value='urn:epcglobal:cbv:bt:0355555000006:',
+                description='This value will be placed in front of any '
+                            'businsess transaction identifiers found in '
+                            'the source transaction.',
+                step=render_events
+            )
+            replace = models.StepParameter.objects.create(
+                name='Replace',
+                value='',
+                description='This is a value to replace with an empty string'
+                            'if the replace value is found.',
+                step=render_events
+            )
             queue_outbound_message = models.Step.objects.create(
                 name='Queue Outbound Message',
                 description=_('Creates a task and sends it to the delayed '
@@ -190,8 +229,8 @@ def create_criteria(endpoint_name='Local Echo Server',
     try:
         output = EPCISOutputCriteria.objects.create(
             name=_('Test Tracelink Transaction Criteria') or criteria_name,
-            action='ADD',
-            event_type='Transaction',
+            action='OBSERVE',
+            event_type='Object',
             biz_location='urn:epc:id:sgln:305555.123456.0',
             end_point=endpoint,
             authentication_info=auth

@@ -15,6 +15,7 @@
     {% if header %}
     <EPCISHeader>
     {% include "epcis/sbdh.xml" %}
+    {% include "quartet_tracelink/masterdata.xml" %}
     </EPCISHeader>
     {% endif %}
     {% endblock %}
