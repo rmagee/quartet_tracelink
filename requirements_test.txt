@@ -15,4 +15,5 @@ quartet_capture
 quartet_epcis
 EPCPyYes
 gs123
+celery
 
