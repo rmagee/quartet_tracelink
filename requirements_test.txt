@@ -16,4 +16,4 @@ quartet_epcis
 EPCPyYes
 gs123
 celery
-
+paramiko
