@@ -11,3 +11,4 @@ recommonmark
 django
 quartet_output
 quartet_masterdata
+quartet_capture
