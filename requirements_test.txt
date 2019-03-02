@@ -12,3 +12,7 @@ django
 quartet_output
 quartet_masterdata
 quartet_capture
+quartet_epcis
+celery
+paramiko
+gs123
