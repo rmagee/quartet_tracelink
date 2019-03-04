@@ -17,9 +17,7 @@ from django.core.exceptions import ValidationError
 from EPCPyYes.core.v1_2.events import EventType
 from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
-from quartet_masterdata.models import Company, Location
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
-from quartet_tracelink.management.commands.utils import create_output_filter_rule
 from quartet_capture.models import Rule, Step, StepParameter, Task
 from quartet_capture.tasks import execute_rule, execute_queued_task
 from quartet_output.steps import SimpleOutputParser, ContextKeys
@@ -78,7 +76,7 @@ class TestRules(TestCase):
     #     # prepopulate the db
     #     self._parse_test_data('data/commission_one_event.xml')
     #     self._parse_test_data('data/nested_pack.xml')
-    #     data_path = os.path.join(curpath, 'data/delayed_ship_pallet.xml')
+    #     data_path = os.path.join(curpath, 'data/no-commit-ship.xml')
     #     delay_rule = create_output_filter_rule(delay_rule=True)
     #     db_task2 = self._create_task(delay_rule)
     #     with open(data_path, 'r') as data_file:
