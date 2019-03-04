@@ -243,7 +243,7 @@ class TestRules(TestCase):
 
     def _create_sftp_endpoint(self):
         ep = models.EndPoint()
-        ep.urn = 'sftp://localhost:2222/upload'
+        ep.urn = 'sftp://localhost:1001/upload'
         ep.name = 'Test EndPoint'
         ep.save()
         return ep
