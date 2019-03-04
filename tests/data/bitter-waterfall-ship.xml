@@ -1,0 +1,37 @@
+<epcis:EPCISDocument xmlns:epcis="urn:epcglobal:epcis:xsd:1" xmlns:gs1ushc="http://epcis.gs1us.org/hc/ns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns3="http://xmlns.rfxcel.com/traceability/3" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:ns0="http://xmlns.rfxcel.com/traceability/api/3" xmlns:ns1="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns2="http://xmlns.rfxcel.com/traceability/messagingService/3" schemaVersion="1.1" xsi:schemaLocation="urn:epcglobal:epcis:xsd:1 EPCglobal-epcis-1_1.xsd" creationDate="2018-11-15T19:16:43Z"> 
+                        <EPCISBody>
+                           <EventList>
+                              <ObjectEvent>
+                                 <eventTime>2018-11-15T19:16:39.247Z</eventTime>
+                                 <eventTimeZoneOffset>-05:00</eventTimeZoneOffset>
+                                 <epcList>
+                                   <epc>urn:epc:id:sscc:0349884.0002342785</epc>
+				   <epc>urn:epc:id:sscc:0349884.0002342786</epc>
+                                 </epcList>
+                                 <action>OBSERVE</action>
+                                 <bizStep>urn:epcglobal:cbv:bizstep:shipping</bizStep>
+                                 <disposition>urn:epcglobal:cbv:disp:in_transit</disposition>
+                                 <readPoint>
+                                    <id>urn:epc:id:sgln:0358716.00000.0</id>
+                                 </readPoint>
+                                 <bizLocation>
+                                    <id>urn:epc:id:sgln:0358716.00000.0</id>
+                                 </bizLocation>
+                                 <bizTransactionList>
+                                    <bizTransaction type="urn:epcglobal:cbv:btt:RMA">TEST</bizTransaction>
+                                 </bizTransactionList>
+                                 <extension>
+                                    <sourceList>
+                                       <source type="urn:epcglobal:cbv:sdt:owning_party">urn:epc:id:sgln:0358716.00000.0</source>
+                                       <source type="urn:epcglobal:cbv:sdt:location">urn:epc:id:sgln:0358716.00000.0</source>
+                                    </sourceList>
+                                    <destinationList>
+                                       <destination type="urn:epcglobal:cbv:sdt:owning_party">urn:epc:id:sgln:2014121.60010.0</destination>
+                                       <destination type="urn:epcglobal:cbv:sdt:location">urn:epc:id:sgln:2014121.60010.0</destination>
+                                    </destinationList>
+                                 </extension>
+                                 <gs1ushc:eventID>Ship_20181101165940370</gs1ushc:eventID>
+                              </ObjectEvent>
+                           </EventList>
+                        </EPCISBody>
+                     </epcis:EPCISDocument>
