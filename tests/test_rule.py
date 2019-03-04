@@ -280,7 +280,7 @@ class TestRules(TestCase):
 
     def _create_sftp_endpoint(self):
         ep = models.EndPoint()
-        ep.urn = 'sftp://localhost:1001/upload'
+        ep.urn = 'sftp://testsftphost:1001/upload'
         ep.name = 'Test EndPoint'
         ep.save()
         return ep
