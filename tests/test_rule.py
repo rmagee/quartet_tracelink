@@ -27,7 +27,7 @@ from quartet_output.models import EPCISOutputCriteria
 from django.test import TestCase
 
 from quartet_output import models
-
+from quartet_masterdata.models import Company
 
 class TestRules(TestCase):
 
@@ -161,6 +161,29 @@ class TestRules(TestCase):
             execute_queued_task(task_name=task_name)
             task = Task.objects.get(name=task_name)
             self.assertEqual(task.status, 'FINISHED')
+            
+    def test_rule_with_agg_comm_sftp_output_with_company_match(self):
+        self.create_company_masterdata()        
+        self._create_bitter_waterfall_criterion()
+        db_rule = self._create_rule()
+        self._create_step(db_rule)
+        self._create_output_steps(db_rule)
+        self._create_comm_step(db_rule)
+        self._create_tracelink_epcpyyes_step(db_rule)
+        self._create_task_step(db_rule)
+        db_rule2 = self._create_transport_rule()
+        self._create_transport_step(db_rule2)
+        db_task = self._create_task(db_rule)
+        curpath = os.path.dirname(__file__)
+        # prepopulate the db
+        self._parse_test_data('data/bitter-waterfall.xml')
+        data_path = os.path.join(curpath, 'data/bitter-waterfall-ship.xml')
+        with open(data_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task)
+            task_name = context.context[ContextKeys.CREATED_TASK_NAME_KEY]
+            execute_queued_task(task_name=task_name)
+            task = Task.objects.get(name=task_name)
+            self.assertEqual(task.status, 'FINISHED')
 
     def _create_destination_criterion(self):
         endpoint = self._create_sftp_endpoint()
@@ -226,6 +249,20 @@ class TestRules(TestCase):
         eoc.save()
         return eoc
 
+    def _create_bitter_waterfall_criterion(self):
+        endpoint = self._create_sftp_endpoint()
+        auth = self._create_sftp_auth()
+        eoc = EPCISOutputCriteria()
+        eoc.name = "Test Criteria"
+        eoc.action = "OBSERVE"
+        eoc.disposition = Disposition.in_transit.value
+        eoc.biz_step = BusinessSteps.shipping.value
+        eoc.destination_id = 'urn:epc:id:sgln:2014121.60010.0'
+        eoc.authentication_info = auth
+        eoc.end_point = endpoint
+        eoc.save()
+        return eoc
+
     def _create_endpoint(self):
         ep = models.EndPoint()
         ep.urn = 'http://testhost'
@@ -255,6 +292,14 @@ class TestRules(TestCase):
         auth.password = 'pass'
         auth.save()
         return auth
+
+    def create_company_masterdata(self):
+        company = Company()
+        company.name = "Test Company"
+        company.SGLN = 'urn:epc:id:sgln:2014121.60010.0'
+        company.GLN13 = '2014121600101'
+        company.company_prefix = '2014121'
+        company.save()
 
     def _create_bad_criterion(self):
         eoc = EPCISOutputCriteria()
