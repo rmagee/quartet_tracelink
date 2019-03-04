@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to quartet_tr4c3l1nk's documentation!
+Welcome to quartet_tracelink's documentation!
 =================================================================
 
 Contents:

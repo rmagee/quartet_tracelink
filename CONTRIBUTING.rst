@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://gitlab.com/serial-lab/quartet_tr4c3l1nk/issues.
+Report bugs at https://gitlab.com/serial-lab/quartet_tracelink/issues.
 
 If you are reporting a bug, please include:
 
@@ -36,14 +36,14 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-quartet_tr4c3l1nk could always use more documentation, whether as part of the
-official quartet_tr4c3l1nk docs, in docstrings, or even on the web in blog posts,
+quartet_tracelink could always use more documentation, whether as part of the
+official quartet_tracelink docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://gitlab.com/serial-lab/quartet_tr4c3l1nk/issues.
+The best way to send feedback is to file an issue at https://gitlab.com/serial-lab/quartet_tracelink/issues.
 
 If you are proposing a feature:
 
@@ -55,17 +55,17 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `quartet_tr4c3l1nk` for local development.
+Ready to contribute? Here's how to set up `quartet_tracelink` for local development.
 
-1. Fork the `quartet_tr4c3l1nk` repo on GitHub.
+1. Fork the `quartet_tracelink` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@gitlab.com:your_name_here/quartet_tr4c3l1nk.git
+    $ git clone git@gitlab.com:your_name_here/quartet_tracelink.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv quartet_tr4c3l1nk
-    $ cd quartet_tr4c3l1nk/
+    $ mkvirtualenv quartet_tracelink
+    $ cd quartet_tracelink/
     $ python setup.py develop
 
 4. Create a branch for local development::
@@ -77,7 +77,7 @@ Ready to contribute? Here's how to set up `quartet_tr4c3l1nk` for local developm
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-        $ flake8 quartet_tr4c3l1nk tests
+        $ flake8 quartet_tracelink tests
         $ python setup.py test
         $ tox
 
@@ -101,7 +101,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 2.6, 2.7, and 3.3, and for PyPy. Check
-   https://travis-ci.org/serial-lab/quartet_tr4c3l1nk/pull_requests
+   https://travis-ci.org/serial-lab/quartet_tracelink/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips
@@ -109,4 +109,4 @@ Tips
 
 To run a subset of tests::
 
-    $ python -m unittest tests.test_quartet_tr4c3l1nk
+    $ python -m unittest tests.test_quartet_tracelink

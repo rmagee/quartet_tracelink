@@ -179,7 +179,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'quartet_tr4c3l1nkdoc'
+htmlhelp_basename = 'quartet_tracelink'
 
 
 # -- Options for LaTeX output --------------------------------------------------

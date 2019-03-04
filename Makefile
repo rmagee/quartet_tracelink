@@ -28,7 +28,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 
 lint: ## check style with flake8
-	flake8 quartet_tr4c3l1nk tests
+	flake8 quartet_tracelink tests
 
 test: ## run tests quickly with the default Python
 	python runtests.py tests
@@ -37,15 +37,15 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source quartet_tr4c3l1nk runtests.py tests
+	coverage run --source quartet_tracelink runtests.py tests
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/quartet_tr4c3l1nk.rst
+	rm -f docs/quartet_tracelink.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ quartet_tr4c3l1nk
+	sphinx-apidoc -o docs/ quartet_tracelink
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html

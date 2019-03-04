@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-test_quartet_tr4c3l1nk
+test_quartet_tracelink
 ------------
 
 Tests for `quartet_tracelink` models module.
