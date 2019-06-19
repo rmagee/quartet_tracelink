@@ -13,24 +13,24 @@
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 import re
-from quartet_capture.rules import Step
-from quartet_output import steps
-from datetime import datetime, date
+from datetime import datetime
+from datetime import timedelta
+
+from dateutil import parser
+from pytz import timezone
+
+from EPCPyYes.core.SBDH import sbdh
+from EPCPyYes.core.v1_2 import template_events, events
+from EPCPyYes.core.v1_2.CBV import dispositions
+from gs123.check_digit import calculate_check_digit
+from gs123.conversion import URNConverter
+from quartet_capture.rules import RuleContext
 from quartet_masterdata.db import DBProxy
+from quartet_masterdata.models import Company
+from quartet_output import steps
+from quartet_output.steps import EPCPyYesOutputStep, ContextKeys
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 from quartet_tracelink.parsing.parser import TraceLinkEPCISParser
-from gs123.conversion import URNConverter
-from quartet_output.steps import EPCPyYesOutputStep, ContextKeys, \
-    FilteredEventStepMixin
-from quartet_capture.rules import RuleContext
-from EPCPyYes.core.v1_2 import template_events, events
-from EPCPyYes.core.v1_2.CBV import business_transactions, dispositions
-from EPCPyYes.core.SBDH import sbdh
-from gs123.check_digit import calculate_check_digit
-from dateutil import parser
-from datetime import timedelta
-from pytz import timezone
-from quartet_masterdata.models import Company
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
