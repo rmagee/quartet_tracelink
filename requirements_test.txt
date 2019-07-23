@@ -10,7 +10,8 @@ recommonmark
 # Additional test requirements go here
 django
 quartet_output
-quartet_masterdata>=1.1.8
+quartet_masterdata
+quartet_templates
 quartet_capture
 quartet_epcis
 EPCPyYes

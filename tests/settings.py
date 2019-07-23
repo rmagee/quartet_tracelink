@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'quartet_capture',
     'quartet_output',
     'quartet_epcis',
-    'quartet_masterdata'
+    'quartet_masterdata',
+    'quartet_templates'
 ]
 
 SITE_ID = 1
@@ -37,3 +38,8 @@ else:
     MIDDLEWARE_CLASSES = ()
 
 MEDIA_ROOT = '/tmp'
+
+try:
+    from tests.local_settings import *
+except ImportError:
+    pass

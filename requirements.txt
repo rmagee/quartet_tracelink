@@ -2,3 +2,4 @@ epcpyyes
 jinja2
 quartet_output
 quartet_masterdata
+quartet_templates

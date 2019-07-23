@@ -13,19 +13,21 @@
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 import os
-from django.core.exceptions import ValidationError
-from EPCPyYes.core.v1_2.events import EventType
-from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
+
+from django.test import TestCase
+from django.conf import settings
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
-from quartet_epcis.parsing.business_parser import BusinessEPCISParser
+from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
+from EPCPyYes.core.v1_2.events import EventType
 from quartet_capture.models import Rule, Step, StepParameter, Task
 from quartet_capture.tasks import execute_rule, execute_queued_task
-from quartet_output.steps import SimpleOutputParser, ContextKeys
-from quartet_output.models import EPCISOutputCriteria
-from django.test import TestCase
-
-from quartet_output import models
+from quartet_epcis.parsing.business_parser import BusinessEPCISParser
 from quartet_masterdata.models import Company
+from quartet_output import models
+from quartet_output.models import EPCISOutputCriteria
+from quartet_output.steps import SimpleOutputParser, ContextKeys
+from quartet_templates.models import Template
+
 
 class TestRules(TestCase):
 
@@ -104,7 +106,8 @@ class TestRules(TestCase):
         self._create_step(db_rule)
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
-        self._create_epcpyyes_step(db_rule)
+        self._create_template()
+        self._create_tracelink_epcpyyes_step(db_rule, use_template=True)
         self._create_task_step(db_rule)
         db_rule2 = self._create_transport_rule()
         self._create_transport_step(db_rule2)
@@ -238,6 +241,32 @@ class TestRules(TestCase):
         eoc.save()
         return eoc
 
+    def _create_template(self):
+        template_data = """<ObjectEvent>
+            {% include "epcis/event_times.xml" %}
+            {% include "epcis/base_extension.xml" %}
+            {% if event.epc_list %}
+                <epcList>
+                    {% for epc in event.epc_list %}
+                        <epc>{{ epc }}</epc>
+                    {% endfor %}
+                </epcList>
+            {% endif %}
+            {% include "epcis/business_data.xml" %}
+            {% include "epcis/extension.xml" %}
+            {% if additional_context and event.biz_step and 'shipping' in event.biz_step %}
+                {% include "quartet_tracelink/shipping_event_extension.xml" %}
+            {% else %}
+                {% include "quartet_tracelink/disposition_assigned_extension.xml" %}
+            {% endif %}
+        </ObjectEvent>
+        """
+        Template.objects.create(
+            content=template_data,
+            name='unit test template',
+            description='template for unit tests.'
+        )
+
     def _create_good_header_criterion(self):
         eoc = EPCISOutputCriteria()
         eoc.name = 'Test Criteria'
@@ -263,7 +292,7 @@ class TestRules(TestCase):
 
     def _create_endpoint(self):
         ep = models.EndPoint()
-        ep.urn = 'http://testhost'
+        ep.urn = getattr(settings, 'TEST_SERVER', 'http://testhost')
         ep.name = 'Test EndPoint'
         ep.save()
         return ep
@@ -396,7 +425,7 @@ class TestRules(TestCase):
                            'context.'
         step.save()
 
-    def _create_tracelink_epcpyyes_step(self, rule):
+    def _create_tracelink_epcpyyes_step(self, rule, use_template=True):
         step = Step()
         step.rule = rule
         step.order = 4
@@ -405,6 +434,12 @@ class TestRules(TestCase):
         step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
                            'context.'
         step.save()
+        if use_template:
+            sp = StepParameter.objects.create(
+                name='Template',
+                value='unit test template',
+                step=step
+            )
 
     def _create_company_from_sgln(self, sgln, type=Company):
         from gs123.check_digit import calculate_check_digit

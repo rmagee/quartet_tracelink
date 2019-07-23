@@ -31,17 +31,23 @@ from quartet_output import steps
 from quartet_output.steps import EPCPyYesOutputStep, ContextKeys
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 from quartet_tracelink.parsing.parser import TraceLinkEPCISParser
+from quartet_output.steps import DynamicTemplateMixin
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
 
-class AddCommissioningDataStep(steps.AddCommissioningDataStep):
+class AddCommissioningDataStep(steps.AddCommissioningDataStep,
+                               DynamicTemplateMixin):
     def process_events(self, events: list):
         """
         Changes the default template and environment for the EPCPyYes
         object events.
         """
         env = get_default_environment()
+        template = self.get_template(
+            env,
+            'quartet_tracelink/disposition_assigned.xml'
+        )
         for event in events:
             for epc in event.epc_list:
                 if ':sscc:' in epc:
@@ -49,8 +55,7 @@ class AddCommissioningDataStep(steps.AddCommissioningDataStep):
                     event.company_prefix = parsed_sscc._company_prefix
                     event.extension_digit = parsed_sscc._extension_digit
                     break
-            event.template = env.get_template(
-                'quartet_tracelink/disposition_assigned.xml')
+            event.template = env.get_template(template)
             event._env = env
 
         return events
