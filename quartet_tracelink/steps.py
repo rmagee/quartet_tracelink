@@ -383,3 +383,6 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
 
     def on_failure(self):
         pass
+
+class DaVinciTracelinkOutputStep(TracelinkFilteredEventOutputStep):
+    pass
