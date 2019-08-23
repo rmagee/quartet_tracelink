@@ -4,4 +4,4 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 recursive-include quartet_tracelink *.html *.png *.gif *js *.css *jpg *jpeg *svg *py
-recursive-include quartet_integrations/templates *
+recursive-include quartet_tracelink/templates *
