@@ -141,7 +141,7 @@ class TraceLinkHelper:
                 active=True,
                 order=1,
                 number_replenishment_size=5000,
-                processing_class_path='list_based_flavorpack.processing_classes.third_party_processing.processing.ThirdPartyProcessingClass',
+                processing_class_path='list_based_flavorpack.processing_classes.third_party_processing.processing.DBProcessingClass',
                 end_point=itest,
                 rule=self.create_rule(),
                 authentication_info=self.create_example_authentication(),
