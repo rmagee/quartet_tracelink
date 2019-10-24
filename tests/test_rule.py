@@ -63,41 +63,41 @@ class TestRules(TestCase):
                     ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
             )
 
-    # def test_delayed_shipment(self):
-    #     self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.0')
-    #     self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.0', type=Location)
-    #     self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.12')
-    #     self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.233', type=Location)
-    #     self._create_shipping_ouput_criterion(event_type=EventType.Object.value)
-    #     db_rule = self._create_rule()
-    #     self._create_step(db_rule, criteria_name='Shipping Criteria')
-    #     self._create_output_steps(db_rule)
-    #     self._create_comm_step(db_rule)
-    #     self._create_epcpyyes_step(db_rule)
-    #     curpath = os.path.dirname(__file__)
-    #     # prepopulate the db
-    #     self._parse_test_data('data/commission_one_event.xml')
-    #     self._parse_test_data('data/nested_pack.xml')
-    #     data_path = os.path.join(curpath, 'data/no-commit-ship.xml')
-    #     delay_rule = create_output_filter_rule(delay_rule=True)
-    #     db_task2 = self._create_task(delay_rule)
-    #     with open(data_path, 'r') as data_file:
-    #         context = execute_rule(data_file.read().encode(), db_task2)
-    #         self.assertEqual(
-    #             len(context.context[ContextKeys.AGGREGATION_EVENTS_KEY.value]),
-    #             3,
-    #         )
-    #         for event in context.context[
-    #             ContextKeys.AGGREGATION_EVENTS_KEY.value]:
-    #             if event.parent_id in ['urn:epc:id:sgtin:305555.3555555.1',
-    #                                    'urn:epc:id:sgtin:305555.3555555.2']:
-    #                 self.assertEqual(len(event.child_epcs), 5)
-    #             else:
-    #                 self.assertEqual(len(event.child_epcs), 2)
-    #         self.assertIsNotNone(
-    #             context.context.get(
-    #                 ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
-    #         )
+    def test_delayed_shipment(self):
+        self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.0')
+        self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.0', type=Location)
+        self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.12')
+        self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.233', type=Location)
+        self._create_shipping_ouput_criterion(event_type=EventType.Object.value)
+        db_rule = self._create_rule()
+        self._create_step(db_rule, criteria_name='Shipping Criteria')
+        self._create_output_steps(db_rule)
+        self._create_comm_step(db_rule)
+        self._create_epcpyyes_step(db_rule)
+        curpath = os.path.dirname(__file__)
+        # prepopulate the db
+        self._parse_test_data('data/commission_one_event.xml')
+        self._parse_test_data('data/nested_pack.xml')
+        data_path = os.path.join(curpath, 'data/no-commit-ship.xml')
+        delay_rule = create_output_filter_rule(delay_rule=True)
+        db_task2 = self._create_task(delay_rule)
+        with open(data_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task2)
+            self.assertEqual(
+                len(context.context[ContextKeys.AGGREGATION_EVENTS_KEY.value]),
+                3,
+            )
+            for event in context.context[
+                ContextKeys.AGGREGATION_EVENTS_KEY.value]:
+                if event.parent_id in ['urn:epc:id:sgtin:305555.3555555.1',
+                                       'urn:epc:id:sgtin:305555.3555555.2']:
+                    self.assertEqual(len(event.child_epcs), 5)
+                else:
+                    self.assertEqual(len(event.child_epcs), 2)
+            self.assertIsNotNone(
+                context.context.get(
+                    ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
+            )
 
 
     def test_rule_with_agg_comm_output(self):

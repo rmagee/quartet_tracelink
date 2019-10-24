@@ -33,8 +33,7 @@ class TraceLinkHelper:
     prod_numbers = 'https://api.tracelink.com:443/soap/snx/snrequest'
     dev_numbers = 'https://itestapi.tracelink.com:443/soap/snx/snrequest'
     nr_transport_step = 'list_based_flavorpack.steps.NumberRequestTransportStep'
-    nr_response_parser = ('third_party_flavors.tracelink_number_response_step.'
-                          'TracelinkNumberResponseParserStep')
+    nr_response_parser = ('quartet_integrations.tracelink.steps.DBResponseStep')
 
     def create_number_rule(self):
         self.create_rule()
@@ -67,9 +66,7 @@ class TraceLinkHelper:
             step_2.description = ('Parses numbers from Tracelink and writes '
                                   'them persistently for use in Number '
                                   'Range module.')
-            step_2.step_class = (
-                'third_party_flavors.tracelink_number_response'
-                '_step.TracelinkNumberResponseParserStep')
+            step_2.step_class = self.nr_response_parser
             step_2.order = 2
             step_2.rule = rule
             step_2.save()
