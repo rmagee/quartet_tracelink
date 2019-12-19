@@ -39,6 +39,7 @@ class TraceLinkHelper:
         self.create_rule()
         self.create_example_pool()
 
+
     def create_rule(self):
         rule, created = capture_models.Rule.objects.get_or_create(
             name="Tracelink Number Request"

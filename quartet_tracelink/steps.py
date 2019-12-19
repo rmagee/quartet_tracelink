@@ -62,7 +62,7 @@ class AddCommissioningDataStep(steps.AddCommissioningDataStep,
 
 
 class OutputParsingStep(steps.OutputParsingStep):
-    def get_parser_type(self):
+    def get_parser_type(self, *args):
         """
         Returns the parser that uses the tracelink template EPCPyYes objects.
         """
