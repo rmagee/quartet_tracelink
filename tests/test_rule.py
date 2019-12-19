@@ -24,6 +24,8 @@ from quartet_capture.tasks import execute_rule, execute_queued_task
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
 from quartet_masterdata.models import Company, Location
 from quartet_output import models
+from quartet_tracelink.management.commands.utils import \
+    create_output_filter_rule
 from quartet_output.models import EPCISOutputCriteria
 from quartet_output.steps import SimpleOutputParser, ContextKeys
 from quartet_templates.models import Template
@@ -65,10 +67,13 @@ class TestRules(TestCase):
 
     def test_delayed_shipment(self):
         self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.0')
-        self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.0', type=Location)
+        self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.0',
+                                       type=Location)
         self._create_company_from_sgln('urn:epc:id:sgln:305555.123456.12')
-        self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.233', type=Location)
-        self._create_shipping_ouput_criterion(event_type=EventType.Object.value)
+        self._create_company_from_sgln('urn:epc:id:sgln:309999.111111.233',
+                                       type=Location)
+        self._create_shipping_ouput_criterion(
+            event_type=EventType.Object.value)
         db_rule = self._create_rule()
         self._create_step(db_rule, criteria_name='Shipping Criteria')
         self._create_output_steps(db_rule)
@@ -98,7 +103,6 @@ class TestRules(TestCase):
                 context.context.get(
                     ContextKeys.EPCIS_OUTPUT_CRITERIA_KEY.value)
             )
-
 
     def test_rule_with_agg_comm_output(self):
         self._create_good_ouput_criterion()
@@ -194,13 +198,14 @@ class TestRules(TestCase):
         eoc.action = "OBSERVE"
         eoc.disposition = Disposition.in_transit.value
         eoc.biz_step = BusinessSteps.shipping.value
-        eoc.destination_id='urn:epc:id:sgln:030378.6.0'
+        eoc.destination_id = 'urn:epc:id:sgln:030378.6.0'
         eoc.authentication_info = auth
         eoc.end_point = endpoint
         eoc.save()
         return eoc
 
-    def _create_good_ouput_criterion(self, event_type=EventType.Transaction.value):
+    def _create_good_ouput_criterion(self,
+                                     event_type=EventType.Transaction.value):
         endpoint = self._create_endpoint()
         auth = self._create_auth()
         eoc = EPCISOutputCriteria()
@@ -218,7 +223,8 @@ class TestRules(TestCase):
         eoc.save()
         return eoc
 
-    def _create_shipping_ouput_criterion(self, event_type=EventType.Object.value):
+    def _create_shipping_ouput_criterion(self,
+                                         event_type=EventType.Object.value):
         endpoint = self._create_endpoint()
         auth = self._create_auth()
         eoc = EPCISOutputCriteria()
