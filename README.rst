@@ -4,7 +4,7 @@ quartet_tracelink
 
 .. image:: https://gitlab.com/serial-lab/quartet_tracelink/badges/master/coverage.svg
    :target: https://gitlab.com/serial-lab/quartet_tracelink/pipelines
-.. image:: https://gitlab.com/serial-lab/quartet_tracelink/badges/master/build.svg
+.. image:: https://gitlab.com/serial-lab/quartet_tracelink/badges/master/pipeline.svg
    :target: https://gitlab.com/serial-lab/quartet_tracelink/commits/master
 .. image:: https://badge.fury.io/py/quartet_tracelink.svg
     :target: https://badge.fury.io/py/quartet_tracelink
