@@ -22,7 +22,7 @@ from EPCPyYes.core.v1_2.events import EventType
 from quartet_capture.models import Rule, Step, StepParameter, Task
 from quartet_capture.tasks import execute_rule, execute_queued_task
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
-from quartet_masterdata.models import Company
+from quartet_masterdata.models import Company, Location
 from quartet_output import models
 from quartet_output.models import EPCISOutputCriteria
 from quartet_output.steps import SimpleOutputParser, ContextKeys
@@ -162,9 +162,9 @@ class TestRules(TestCase):
             execute_queued_task(task_name=task_name)
             task = Task.objects.get(name=task_name)
             self.assertEqual(task.status, 'FINISHED')
-            
+
     def test_rule_with_agg_comm_sftp_output_with_company_match(self):
-        self.create_company_masterdata()        
+        self.create_company_masterdata()
         self._create_bitter_waterfall_criterion()
         db_rule = self._create_rule()
         self._create_step(db_rule)
