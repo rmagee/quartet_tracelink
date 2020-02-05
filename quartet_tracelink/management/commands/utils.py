@@ -237,3 +237,12 @@ def create_criteria(endpoint_name='Local Echo Server',
         )
     except IntegrityError:
         print('Criteria already exists.')
+
+def create_itest_endpoint():
+    try:
+        EndPoint.objects.create(
+            name='Tracelink SNX Request',
+            urn='https://itestapi.tracelink.com:443/soap/snx/snrequest'
+        )
+    except IntegrityError:
+        print('Tracelink SNX Request endpoing already exists.')

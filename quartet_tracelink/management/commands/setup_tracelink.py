@@ -29,7 +29,8 @@
 from django.utils.translation import gettext as _
 from django.core.management.base import BaseCommand
 from quartet_tracelink.utils import create_example_rule, TraceLinkHelper
-from quartet_tracelink.management.commands.utils import create_output_filter_rule
+from quartet_tracelink.management.commands.utils import \
+    create_output_filter_rule, create_itest_endpoint
 
 class Command(BaseCommand):
     help = _(
@@ -42,3 +43,4 @@ class Command(BaseCommand):
         tlh = TraceLinkHelper()
         tlh.create_number_rule()
         create_output_filter_rule(delay_rule=True)
+        create_itest_endpoint()
