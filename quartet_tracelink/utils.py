@@ -114,23 +114,8 @@ class TraceLinkHelper:
         return auth
 
     def create_example_pool(self):
-        curpath = os.path.dirname(__file__)
-        f = open(os.path.join(curpath,
-                              './templates/quartet_tracelink/number_request.xml'))
-        template_text = f.read()
-        f.close()
         itest, prod = self.create_endpoints()
-        try:
-            template = template_models.Template.objects.get(
-                name='Tracelink Number Request'
-            )
-        except template_models.Template.DoesNotExist:
-            template = template_models.Template.objects.create(
-                name='Tracelink Number Request',
-                content=template_text,
-                description='Tracelink number request template.'
-            )
-
+        template = self.create_template()
         pool, created = sb_models.Pool.objects.get_or_create(
             readable_name='Example Tracelink Pool',
             machine_name='00355555123459'
@@ -160,6 +145,24 @@ class TraceLinkHelper:
                 'sending_system': 'Sender GLN 13 Goes Here'
             }
             self.create_processing_parameters(params, region)
+
+    def create_template(self):
+        curpath = os.path.dirname(__file__)
+        f = open(os.path.join(curpath,
+                              './templates/quartet_tracelink/number_request.xml'))
+        template_text = f.read()
+        f.close()
+        try:
+            template = template_models.Template.objects.get(
+                name='Tracelink Number Request'
+            )
+        except template_models.Template.DoesNotExist:
+            template = template_models.Template.objects.create(
+                name='Tracelink Number Request',
+                content=template_text,
+                description='Tracelink number request template.'
+            )
+        return template
 
     def create_processing_parameters(self, input: dict, region):
         for k, v in input.items():
