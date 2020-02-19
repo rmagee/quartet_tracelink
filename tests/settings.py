@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'quartet_output',
     'quartet_epcis',
     'quartet_masterdata',
-    'quartet_templates'
+    'quartet_templates',
+    'serialbox'
 ]
 
 SITE_ID = 1

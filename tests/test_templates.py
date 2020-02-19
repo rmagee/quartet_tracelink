@@ -12,24 +12,21 @@ from unittest import TestCase
 
 import uuid
 
-from jinja2.loaders import ChoiceLoader, PackageLoader
-from jinja2.environment import Environment
-
-from EPCPyYes.core.v1_2.helpers import gtin_urn_generator, \
-    get_current_utc_time_and_offset, gln13_data_to_sgln_urn, gtin_to_urn
-from EPCPyYes.core.v1_2.events import BusinessTransaction, \
-    Source, Destination, \
-    Action, QuantityElement, ErrorDeclaration
-from quartet_tracelink.parsing.epcpyyes import ObjectEvent
-#from EPCPyYes.core.v1_2.template_events
-from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
-from EPCPyYes.core.v1_2.CBV.source_destination import SourceDestinationTypes
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
 from EPCPyYes.core.v1_2.CBV.business_transactions import \
     BusinessTransactionType
+# from EPCPyYes.core.v1_2.template_events
+from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
 from EPCPyYes.core.v1_2.CBV.instance_lot_master_data import \
     InstanceLotMasterDataAttribute, \
     LotLevelAttributeName, ItemLevelAttributeName
+from EPCPyYes.core.v1_2.CBV.source_destination import SourceDestinationTypes
+from EPCPyYes.core.v1_2.events import BusinessTransaction, \
+    Source, Destination, \
+    Action
+from EPCPyYes.core.v1_2.helpers import gtin_urn_generator, \
+    get_current_utc_time_and_offset, gln13_data_to_sgln_urn
+from quartet_tracelink.parsing.epcpyyes import ObjectEvent
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 
 

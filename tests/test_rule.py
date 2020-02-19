@@ -14,18 +14,17 @@
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 import os
 
-from django.test import TestCase
 from django.conf import settings
+from django.test import TestCase
+
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
 from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
 from EPCPyYes.core.v1_2.events import EventType
 from quartet_capture.models import Rule, Step, StepParameter, Task
 from quartet_capture.tasks import execute_rule, execute_queued_task
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
-from quartet_masterdata.models import Company, Location
+from quartet_masterdata.models import Company
 from quartet_output import models
-from quartet_tracelink.management.commands.utils import \
-    create_output_filter_rule
 from quartet_output.models import EPCISOutputCriteria
 from quartet_output.steps import SimpleOutputParser, ContextKeys
 from quartet_templates.models import Template

@@ -2,4 +2,7 @@
     <tl:transactionDate>{{ additional_context['transaction_date'] }}</tl:transactionDate>
     <tl:shipToCountryCode>US</tl:shipToCountryCode>
     <tl:salesDistributionType>INCOUNTRYTRANSFER</tl:salesDistributionType>
+    {% if additional_context['trading_partners'] %}
+    {% include "quartet_tracelink/shipping_trading_partner.xml" %}
+    {% endif %}
 </tl:shippingEventExtensions>

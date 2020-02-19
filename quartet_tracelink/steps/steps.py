@@ -24,9 +24,10 @@ from EPCPyYes.core.v1_2 import template_events, events
 from EPCPyYes.core.v1_2.CBV import dispositions
 from gs123.check_digit import calculate_check_digit
 from gs123.conversion import URNConverter
+from gs123.regex import urn_patterns
 from quartet_capture.rules import RuleContext
 from quartet_masterdata.db import DBProxy
-from quartet_masterdata.models import Company
+from quartet_masterdata.models import Company, OutboundMapping
 from quartet_output import steps
 from quartet_output.steps import EPCPyYesOutputStep, ContextKeys
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
@@ -252,7 +253,8 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 return result.gtin14
 
 
-class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
+class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
+                                       DynamicTemplateMixin):
     """
     Very similar to the EPCPyYesOutput step except that this step will
     only render the filtered events and place them into the same outbound
@@ -276,6 +278,7 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
         filtered_events = self.get_filtered_events()
         self.info('Found %s filtered events.' % len(filtered_events))
         if len(filtered_events) > 0:
+            self.process_events(filtered_events)
             self.transform_event(filtered_events[0])
             self.transform_business_transaction(filtered_events[0])
             dest, source = self.get_sgln_info(filtered_events[0])
@@ -289,13 +292,9 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
             epcis_document = template_events.EPCISEventListDocument(
                 filtered_events,
                 sbdh,
-                template=env.get_template(
-                    'quartet_tracelink/tracelink_epcis_events_document.xml'
-                ),
-                additional_context={
-                    'masterdata': db_records,
-                    'transaction_date': datetime.utcnow().date().isoformat()
-                }
+                template=self.get_template(env, 'quartet_tracelink/tracelink_'
+                                                'epcis_events_document.xml'),
+                additional_context=self.additional_context(db_records)
             )
             if self.get_boolean_parameter('JSON', False):
                 data = epcis_document.render_json()
@@ -308,6 +307,22 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
             rule_context.context[
                 ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value
             ] = data
+
+
+    def additional_context(self, partner_records):
+        """
+        Override this to add or modify the additional context passed to the
+        tracelink EPCPyYes events.
+        :param partner_records: Trading partner records for the header
+        master data.
+        :return: The additional context dictionary to use when rendering
+        templates.  This context is supplemental to the one EPCPyYes expects
+        natively.
+        """
+        return {
+            'masterdata': partner_records,
+            'transaction_date': datetime.utcnow().date().isoformat()
+        }
 
     def transform_event(self, event: events.EPCISBusinessEvent):
         """
@@ -384,5 +399,41 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep):
     def on_failure(self):
         pass
 
-class DaVinciTracelinkOutputStep(TracelinkFilteredEventOutputStep):
-    pass
+
+class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
+
+    def get_mapping(self, filtered_event):
+        '''
+        Will look for trading partner mappings by pulling the company prefix
+        out of the first epc in the message and look up that company in
+        the quartet master_material company mapping model.
+        :param urns: The urns in the current filtered event.
+        :return: A company mapping model instance from the quartet_masterdata
+            package.
+        '''
+
+        for event in events:
+            epc_list = getattr(event, 'epc_list', event.epcs)
+            for pattern in urn_patterns:
+                match = pattern.match(epc_list[0])
+                if match:
+                    self.info('Found a matching urn...%s', epc_list[0])
+                    fields = match.groupdict()
+                    company_prefix = fields['company_prefix']
+                    self.info('Using company prefix %s', company_prefix)
+                    try:
+                        Company.objects.get(gs1_company_prefix=company_prefix)
+                    except Company.DoesNotExist:
+                        raise self.CompanyConfigurationError(
+                            'The company with gs1 company prefix %s does not'
+                            ' exist in the database.  Please conifgure this '
+                            'company along with an outbound mapping for this '
+                            'step to function correctly.' % company_prefix
+                        )
+
+    class CompanyConfigurationError(Exception):
+        pass
+
+    def process_events(self, events: list):
+        self.get_mapping(events)
+        return super().process_events(events)
