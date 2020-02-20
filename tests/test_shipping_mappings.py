@@ -26,6 +26,9 @@ from quartet_templates.models import Template
 
 
 class TestOutputMappings(TransactionTestCase):
+    def __init__(self, methodName: str = ...) -> None:
+        super().__init__(methodName)
+        self.render_step = None
 
     def setUp(self) -> None:
         self.create_rule()
@@ -75,6 +78,27 @@ class TestOutputMappings(TransactionTestCase):
                 rule_name="test rule",
                 run_immediately=True
             )
+
+    def test_dynamic_template(self):
+        StepParameter.objects.create(
+            name='Template',
+            value='unit test template',
+            step=self.render_step
+        )
+        curpath = os.path.dirname(__file__)
+        file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
+
+        with open(file_path, "rb") as f:
+            rule = Rule.objects.get(name='test rule')
+            db_task = Task.objects.create(
+                rule=rule
+            )
+            context = execute_rule(f.read(), db_task)
+            self.assertTrue('<tl:businessId type="GLN">0651991000000'
+                            '</tl:businessId>' in
+                            context.context['OUTBOUND_EPCIS_MESSAGE'])
+            self.assertTrue('<tl:fromBusiness>' in
+                            context.context['OUTBOUND_EPCIS_MESSAGE'])
 
     def test_outbound_mapping(self):
         curpath = os.path.dirname(__file__)
@@ -150,6 +174,7 @@ class TestOutputMappings(TransactionTestCase):
         step_parameter.name = 'EPCIS Output Criteria'
         step_parameter.value = criteria_name
         step_parameter.save()
+        self.render_step = step
         return step
 
     def create_filter_step(self, rule, criteria_name='Test Criteria'):
@@ -170,7 +195,7 @@ class TestOutputMappings(TransactionTestCase):
     def create_template(self):
         curpath = os.path.dirname(__file__)
         data_path = os.path.join(curpath,
-                                 './data/mapping_shipping.xml')
+                                 '../quartet_tracelink/templates/quartet_tracelink/tracelink_epcis_events_document.xml')
         data = open(data_path).read()
         Template.objects.create(
             name="unit test template",
