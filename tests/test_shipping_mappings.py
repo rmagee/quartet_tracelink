@@ -18,8 +18,8 @@ import os
 from django.test import TransactionTestCase
 from django.conf import settings
 
-from quartet_capture.models import Rule, Step, StepParameter
-from quartet_capture.tasks import create_and_queue_task
+from quartet_capture.models import Rule, Step, StepParameter, Task
+from quartet_capture.tasks import execute_rule, create_and_queue_task
 from quartet_masterdata.models import Location, Company, OutboundMapping
 from quartet_output.models import EPCISOutputCriteria, EndPoint
 from quartet_templates.models import Template
@@ -81,27 +81,32 @@ class TestOutputMappings(TransactionTestCase):
         file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
 
         with open(file_path, "rb") as f:
-            create_and_queue_task(
-                data=f.read(),
-                rule_name="test rule",
-                run_immediately=True
+            rule = Rule.objects.get(name='test rule')
+            db_task = Task.objects.create(
+                rule=rule
             )
+            context = execute_rule(f.read(), db_task)
+            self.assertTrue('<tl:businessId type="GLN">0651991000000'
+                            '</tl:businessId>' in
+                            context.context['OUTBOUND_EPCIS_MESSAGE'])
+            self.assertTrue('<tl:fromBusiness>' in
+                            context.context['OUTBOUND_EPCIS_MESSAGE'])
 
     def create_outbound_mapping(self):
         company = Company.objects.get(
             gs1_company_prefix='0952696005'
         )
         ship_from_co = Company.objects.get(
-            gs1_company_prefix='09620560000'
+            gs1_company_prefix='0651991'
         )
         ship_from_location = Location.objects.get(
             GLN13='0962056000006'
         )
         ship_to_co = Company.objects.get(
-            gs1_company_prefix='0646696'
+            gs1_company_prefix='0967914'
         )
         ship_to_location = Location.objects.get(
-            GLN13='0646696000005'
+            GLN13='0967914000201'
         )
         OutboundMapping.objects.create(
             company=company,

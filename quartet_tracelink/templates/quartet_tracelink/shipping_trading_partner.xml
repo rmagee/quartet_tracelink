@@ -1,43 +1,77 @@
-<tl:shippingEventExtensions>
-    <tl:transactionDate>
-        {{ additional_context['transaction_date'] }}</tl:transactionDate>
-    <tl:shipToCountryCode>US</tl:shipToCountryCode>
-    <tl:salesDistributionType>INCOUNTRYTRANSFER</tl:salesDistributionType>
-    {% with ship_from = additional_context['ship_from_business'] %}
-    <tl:fromBusiness>
-    <tl:businessId type="GLN">{{ ship_from.SGLN }}</tl:businessId>
-    <tl:address>
-        <tl:businessName>{{ ship_from.name }}</tl:businessName>
-        <tl:street1>{{ ship_from.address1 }}</tl:street1>
-        {% if ship_from.address2 %}
-        <tl:street1>{{ ship_from.address2 }}</tl:street1>
-        {% else %}
-            <tl:street2/>
-        {% endif %}
-        <tl:city>{{ ship_from.city }}</tl:city>
-        <tl:stateOrRegion>{{ ship_from.state_province }}</tl:stateOrRegion>
-        <tl:postalCode>{{ ship_from.postal_code }}</tl:postalCode>
-        <tl:country>{{ ship_from.country }}</tl:country>
-    </tl:address>
-    {% endwith %}
-    </tl:fromBusiness>
-    <tl:shipFromLocation>
-        {% with ship_from = additional_context['ship_from_location'] %}
-            <tl:facilityId type="GLN">{{ ship_from.GLN13 }}</tl:facilityId>
-            <tl:facilityId type="SGLN">{{ ship_from.SGLN }}</tl:facilityId>
-            <tl:address>
-                <tl:businessName>{{ ship_from.name }}</tl:businessName>
-                <tl:street1>{{ ship_from.address1 }}</tl:street1>
-                {% if ship_from.address2 %}
+{% with mapping = additional_context['outbound_mapping'] %}
+    {% with ship_from = mapping.from_business %}
+        <tl:fromBusiness>
+        <tl:businessId type="GLN">{{ ship_from.GLN13 }}</tl:businessId>
+        <tl:address>
+            <tl:businessName>{{ ship_from.name }}</tl:businessName>
+            <tl:street1>{{ ship_from.address1 }}</tl:street1>
+            {% if ship_from.address2 %}
                 <tl:street1>{{ ship_from.address2 }}</tl:street1>
-                {% else %}
-                    <tl:street2/>
-                {% endif %}
-                <tl:city>{{ ship_from.city }}</tl:city>
-                <tl:stateOrRegion>{{ ship_from.state_province }}</tl:stateOrRegion>
-                <tl:postalCode>{{ ship_from.postal_code }}</tl:postalCode>
-                <tl:country>{{ ship_from.country }}</tl:country>
-            </tl:address>
-        {% endwith %}
+            {% else %}
+                <tl:street2/>
+            {% endif %}
+            <tl:city>{{ ship_from.city }}</tl:city>
+            <tl:stateOrRegion>{{ ship_from.state_province }}</tl:stateOrRegion>
+            <tl:postalCode>{{ ship_from.postal_code }}</tl:postalCode>
+            <tl:country>{{ ship_from.country }}</tl:country>
+        </tl:address>
+    {% endwith %}
+</tl:fromBusiness>
+    <tl:shipFromLocation>
+    {% with ship_from = mapping.ship_from %}
+        <tl:facilityId type="GLN">{{ ship_from.GLN13 }}</tl:facilityId>
+        <tl:facilityId type="SGLN">{{ ship_from.SGLN }}</tl:facilityId>
+        <tl:address>
+            <tl:businessName>{{ ship_from.name }}</tl:businessName>
+            <tl:street1>{{ ship_from.address1 }}</tl:street1>
+            {% if ship_from.address2 %}
+                <tl:street1>{{ ship_from.address2 }}</tl:street1>
+            {% else %}
+                <tl:street2/>
+            {% endif %}
+            <tl:city>{{ ship_from.city }}</tl:city>
+            <tl:stateOrRegion>{{ ship_from.state_province }}</tl:stateOrRegion>
+            <tl:postalCode>{{ ship_from.postal_code }}</tl:postalCode>
+            <tl:country>{{ ship_from.country }}</tl:country>
+        </tl:address>
+    {% endwith %}
     </tl:shipFromLocation>
-</tl:shippingEventExtensions>
+    {% with ship_to = mapping.to_business %}
+        <tl:toBusiness>
+        <tl:businessId type="GLN">{{ ship_to.GLN13 }}</tl:businessId>
+        <tl:address>
+            <tl:businessName>{{ ship_to.name }}</tl:businessName>
+            <tl:street1>{{ ship_to.address1 }}</tl:street1>
+            {% if ship_to.address2 %}
+                <tl:street1>{{ ship_to.address2 }}</tl:street1>
+            {% else %}
+                <tl:street2/>
+            {% endif %}
+            <tl:city>{{ ship_to.city }}</tl:city>
+            <tl:stateOrRegion>{{ ship_to.state_province }}</tl:stateOrRegion>
+            <tl:postalCode>{{ ship_to.postal_code }}</tl:postalCode>
+            <tl:country>{{ ship_to.country }}</tl:country>
+        </tl:address>
+        </tl:toBusiness>
+    {% endwith %}
+    <tl:shipToLocation>
+    {% with ship_to = mapping.ship_to %}
+        <tl:facilityId type="GLN">{{ ship_to.GLN13 }}</tl:facilityId>
+        <tl:facilityId type="SGLN">{{ ship_to.SGLN }}</tl:facilityId>
+        <tl:address>
+            <tl:businessName>{{ ship_to.name }}</tl:businessName>
+            <tl:street1>{{ ship_to.address1 }}</tl:street1>
+            {% if ship_to.address2 %}
+                <tl:street1>{{ ship_to.address2 }}</tl:street1>
+            {% else %}
+                <tl:street2/>
+            {% endif %}
+            <tl:city>{{ ship_to.city }}</tl:city>
+            <tl:stateOrRegion>{{ ship_to.state_province }}</tl:stateOrRegion>
+            <tl:postalCode>{{ ship_to.postal_code }}</tl:postalCode>
+            <tl:country>{{ ship_to.country }}</tl:country>
+        </tl:address>
+    {% endwith %}
+    </tl:shipToLocation>
+{% endwith %}
+
