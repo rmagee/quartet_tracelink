@@ -15,6 +15,7 @@ quartet_templates
 quartet_capture
 quartet_epcis
 EPCPyYes
+serialbox
 gs123
 celery
 paramiko
