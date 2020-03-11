@@ -30,7 +30,9 @@
                                        <destination type="urn:epcglobal:cbv:sdt:location">urn:epc:id:sgln:2014121.60010.0</destination>
                                     </destinationList>
                                  </extension>
-                                 <gs1ushc:eventID>Ship_20181101165940370</gs1ushc:eventID>
+                                  <gs1ushc:transferredById type="SGLN">urn:epc:id:sgln:08620530000.0.0</gs1ushc:transferredById>
+                                  <gs1ushc:transferredToId type="GLN">0865624000306</gs1ushc:transferredToId>
+                                  <gs1ushc:eventID>d33f7756-5fd8-11ea-822b-525400998437</gs1ushc:eventID>
                               </ObjectEvent>
                            </EventList>
                         </EPCISBody>

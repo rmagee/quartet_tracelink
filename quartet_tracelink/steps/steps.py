@@ -25,6 +25,7 @@ from EPCPyYes.core.v1_2.CBV import dispositions
 from gs123.check_digit import calculate_check_digit
 from gs123.conversion import URNConverter
 from gs123.regex import urn_patterns
+from quartet_capture import models, rules
 from quartet_capture.rules import RuleContext
 from quartet_masterdata.db import DBProxy
 from quartet_masterdata.models import Company, OutboundMapping
@@ -63,11 +64,27 @@ class AddCommissioningDataStep(steps.AddCommissioningDataStep,
 
 
 class OutputParsingStep(steps.OutputParsingStep):
+
+    def __init__(self, db_task: models.Task, **kwargs):
+        super().__init__(db_task, **kwargs)
+        self.data_parser = None
+
+    def execute(self, data, rule_context: rules.RuleContext):
+        ret = super().execute(data, rule_context)
+        if getattr(self.parser, 'sender_gln'):
+            rule_context.context['SENDER_GLN'] = self.parser.sender_gln
+        return ret
+
     def get_parser_type(self, *args):
         """
         Returns the parser that uses the tracelink template EPCPyYes objects.
         """
         return TraceLinkEPCISParser
+
+    def instantiate_parser(self, data, parser_type, skip_parsing):
+        self.parser = super().instantiate_parser(data, parser_type,
+                                                 skip_parsing)
+        return self.parser
 
 
 class TracelinkOutputStep(EPCPyYesOutputStep):
@@ -300,6 +317,8 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
                 data = epcis_document.render_json()
             else:
                 data = epcis_document.render()
+                self.info('Rendering: %s', data
+                          )
             self.info('Warning: this step is overwriting the Outbound '
                       'EPCIS Message key context key data.  If any data '
                       'was in this key prior to this step and had not '
@@ -307,7 +326,6 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
             rule_context.context[
                 ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value
             ] = data
-
 
     def additional_context(self, partner_records):
         """

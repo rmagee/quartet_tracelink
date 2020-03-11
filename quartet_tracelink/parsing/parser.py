@@ -15,14 +15,23 @@
 import logging
 
 from EPCPyYes.core.v1_2 import template_events
+from quartet_output.models import EPCISOutputCriteria
 from quartet_output.parsing import BusinessOutputParser
 
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
+from lxml import etree
 
 logger = logging.getLogger(__name__)
 
 
 class TraceLinkEPCISParser(BusinessOutputParser):
+
+    def __init__(self, stream, epcis_output_criteria: EPCISOutputCriteria,
+                 event_cache_size: int = 1024,
+                 recursive_decommission: bool = True, skip_parsing=False):
+        super().__init__(stream, epcis_output_criteria, event_cache_size,
+                         recursive_decommission, skip_parsing)
+        self.sender_gln = None
 
     def get_epcpyyes_object_event(self):
         return template_events.ObjectEvent(
@@ -30,3 +39,8 @@ class TraceLinkEPCISParser(BusinessOutputParser):
             env=get_default_environment(),
             template='quartet_tracelink/disposition_assigned.xml'
         )
+
+    def parse_unexpected_obj_element(self, oevent, child: etree.Element):
+        if "transferredToId" in child.tag:
+            logger.debug('Found a sender GLN')
+            self.sender_gln = child.text.strip()
