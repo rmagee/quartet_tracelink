@@ -38,7 +38,7 @@ class TestRules(TestCase):
         self._create_step(db_rule)
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
-        self._create_epcpyyes_step(db_rule)
+        self._create_tracelink_epcpyyes_step(db_rule)
         db_task = self._create_task(db_rule)
         curpath = os.path.dirname(__file__)
         # prepopulate the db
@@ -134,7 +134,7 @@ class TestRules(TestCase):
         self._create_step(db_rule)
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
-        self._create_tracelink_epcpyyes_step(db_rule)
+        self._create_tracelink_epcpyyes_step_2(db_rule)
         self._create_task_step(db_rule)
         db_rule2 = self._create_transport_rule()
         self._create_transport_step(db_rule2)
@@ -361,6 +361,11 @@ class TestRules(TestCase):
         step_parameter.name = 'EPCIS Output Criteria'
         step_parameter.value = criteria_name
         step_parameter.save()
+        StepParameter.objects.create(
+            step=step,
+            name='Sender GLN',
+            value='1234567890123'
+        )
         return step
 
     def _create_output_steps(self, rule):
@@ -406,6 +411,22 @@ class TestRules(TestCase):
                 value='unit test template',
                 step=step
             )
+
+    def _create_tracelink_epcpyyes_step_2(self, rule):
+        step = Step()
+        step.rule = rule
+        step.order = 4
+        step.name = 'Create EPCIS'
+        step.step_class = 'quartet_tracelink.steps.TracelinkOutputStep'
+        step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
+                           'context.'
+        step.save()
+        sp = StepParameter.objects.create(
+            name='Template Path',
+            value='quartet_tracelink/tracelink_epcis_events_document_gln_header.xml',
+            step=step
+        )
+
 
     def _create_company_from_sgln(self, sgln, type=Company):
         from gs123.check_digit import calculate_check_digit

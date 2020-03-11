@@ -2,10 +2,10 @@
     <sbdh:StandardBusinessDocumentHeader>
         <sbdh:HeaderVersion>1.0</sbdh:HeaderVersion>
         <sbdh:Sender>
-            <sbdh:Identifier Authority="GLN">{{ rule_context.sender_gln }}</sbdh:Identifier>
+            <sbdh:Identifier Authority="GLN">{{ additional_context.SENDER_GLN }}</sbdh:Identifier>
         </sbdh:Sender>
         <sbdh:Receiver>
-            <sbdh:Identifier Authority="GLN">{{ rule_context.receiver_gln }}</sbdh:Identifier>
+            <sbdh:Identifier Authority="GLN">{{ additional_context.RECEIVER_GLN }}</sbdh:Identifier>
         </sbdh:Receiver>
         <sbdh:DocumentIdentification>
             <sbdh:Standard>EPCglobal</sbdh:Standard>

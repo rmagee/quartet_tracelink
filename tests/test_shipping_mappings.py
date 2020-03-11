@@ -100,6 +100,27 @@ class TestOutputMappings(TransactionTestCase):
             self.assertTrue('<tl:fromBusiness>' in
                             context.context['OUTBOUND_EPCIS_MESSAGE'])
 
+    # def test_dynamic_template_2(self):
+    #     StepParameter.objects.create(
+    #         name='Template',
+    #         value='unit test template 2',
+    #         step=self.render_step
+    #     )
+    #     curpath = os.path.dirname(__file__)
+    #     file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
+    #
+    #     with open(file_path, "rb") as f:
+    #         rule = Rule.objects.get(name='test rule')
+    #         db_task = Task.objects.create(
+    #             rule=rule
+    #         )
+    #         context = execute_rule(f.read(), db_task)
+    #         self.assertTrue('<tl:businessId type="GLN">0651991000000'
+    #                         '</tl:businessId>' in
+    #                         context.context['OUTBOUND_EPCIS_MESSAGE'])
+    #         self.assertTrue('<tl:fromBusiness>' in
+    #                         context.context['OUTBOUND_EPCIS_MESSAGE'])
+
     def test_outbound_mapping(self):
         curpath = os.path.dirname(__file__)
         file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
@@ -160,6 +181,7 @@ class TestOutputMappings(TransactionTestCase):
         self.create_filter_step(rule)
         self.create_output_step(rule)
         self.create_template()
+        self.create_template_2()
 
     def create_output_step(self, rule, criteria_name='Test Criteria'):
         step = Step()
@@ -199,5 +221,15 @@ class TestOutputMappings(TransactionTestCase):
         data = open(data_path).read()
         Template.objects.create(
             name="unit test template",
+            content=data
+        )
+
+    def create_template_2(self):
+        curpath = os.path.dirname(__file__)
+        data_path = os.path.join(curpath,
+                                 '../quartet_tracelink/templates/quartet_tracelink/tracelink_epcis_events_document_gln_header.xml')
+        data = open(data_path).read()
+        Template.objects.create(
+            name="unit test template 2",
             content=data
         )

@@ -68,11 +68,12 @@ class OutputParsingStep(steps.OutputParsingStep):
     def __init__(self, db_task: models.Task, **kwargs):
         super().__init__(db_task, **kwargs)
         self.data_parser = None
-        self.get_or_create_parameter('SENDER_GLN', '', 'The sender GLN13 if '
+        self.get_or_create_parameter('Sender GLN', '', 'The sender GLN13 if '
                                                        'necessary.')
 
     def execute(self, data, rule_context: rules.RuleContext):
         ret = super().execute(data, rule_context)
+        rule_context.context['SENDER_GLN'] = self.get_parameter('Sender GLN','')
         if getattr(self.parser, 'receiver_gln'):
             rule_context.context['RECEIVER_GLN'] = self.parser.receiver_gln
         return ret
@@ -208,13 +209,20 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                     if gtin14:
                         event.gtin14 = gtin14
                 increment_val += 1
-
+            template_path = self.get_or_create_parameter(
+                'Template Path',
+                'quartet_tracelink/tracelink_epcis_events_document.xml',
+                'The jinja 2 template to render.'
+            )
+            additional_context = {
+                'RECEIVER_GLN': rule_context.context.get('RECEIVER_GLN'),
+                'SENDER_GLN': rule_context.context.get('SENDER_GLN')
+            }
             epcis_document = template_events.EPCISEventListDocument(
                 all_events,
                 sbdh_out,
-                template=env.get_template(
-                    'quartet_tracelink/tracelink_epcis_events_document.xml'
-                )
+                template=env.get_template(template_path),
+                additional_context=additional_context
             )
             if self.get_boolean_parameter('JSON', False):
                 data = epcis_document.render_json()
@@ -270,6 +278,12 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             if epc.startswith('urn:epc:id:sgtin:'):
                 result = URNConverter(epc)
                 return result.gtin14
+
+    def declared_parameters(self):
+        ret = super().declared_parameters()
+        ret['Template Name'] = 'Jinja 2 template path to override.  Not the ' \
+                               'name of a qu4rtet template.'
+        return ret
 
 
 class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
