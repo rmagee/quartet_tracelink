@@ -1,0 +1,18 @@
+<EPCISHeader>
+    <sbdh:StandardBusinessDocumentHeader>
+        <sbdh:HeaderVersion>1.0</sbdh:HeaderVersion>
+        <sbdh:Sender>
+            <sbdh:Identifier Authority="GLN">{{ rule_context.sender_gln }}</sbdh:Identifier>
+        </sbdh:Sender>
+        <sbdh:Receiver>
+            <sbdh:Identifier Authority="GLN">{{ rule_context.receiver_gln }}</sbdh:Identifier>
+        </sbdh:Receiver>
+        <sbdh:DocumentIdentification>
+            <sbdh:Standard>EPCglobal</sbdh:Standard>
+            <sbdh:TypeVersion>1.0</sbdh:TypeVersion>
+            <sbdh:InstanceIdentifier>{{ UUID }}</sbdh:InstanceIdentifier>
+            <sbdh:Type>Events</sbdh:Type>
+            <sbdh:CreationDateAndTime>{{ datetime }}</sbdh:CreationDateAndTime>
+        </sbdh:DocumentIdentification>
+    </sbdh:StandardBusinessDocumentHeader>
+</EPCISHeader>

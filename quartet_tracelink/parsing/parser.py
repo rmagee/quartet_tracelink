@@ -31,7 +31,7 @@ class TraceLinkEPCISParser(BusinessOutputParser):
                  recursive_decommission: bool = True, skip_parsing=False):
         super().__init__(stream, epcis_output_criteria, event_cache_size,
                          recursive_decommission, skip_parsing)
-        self.sender_gln = None
+        self.receiver_gln = None
 
     def get_epcpyyes_object_event(self):
         return template_events.ObjectEvent(
@@ -43,4 +43,4 @@ class TraceLinkEPCISParser(BusinessOutputParser):
     def parse_unexpected_obj_element(self, oevent, child: etree.Element):
         if "transferredToId" in child.tag:
             logger.debug('Found a sender GLN')
-            self.sender_gln = child.text.strip()
+            self.receiver_gln = child.text.strip()

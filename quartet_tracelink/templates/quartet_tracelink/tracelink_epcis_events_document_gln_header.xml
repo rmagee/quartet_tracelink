@@ -1,0 +1,40 @@
+{% if render_xml_declaration %}
+    <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+{% endif %}
+<epcis:EPCISDocument
+        xmlns:epcis="urn:epcglobal:epcis:xsd:1"
+        xmlns:cbvmd="urn:epcglobal:cbv:mda"
+	xmlns:tl="http://epcis.tracelink.com/ns"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-nstance"
+	xsi:schemaLocation="urn:epcglobal:epcis:xsd:1 file:///C:/workspace-git/maps_xml_schema/release-obstruction/xmlSchema/pt_serialization/transaction/TL_EPCIS_EPCglobal-epcis-1_2.xsd"
+        {% if header %}
+        xmlns:{{ header.namespace }}="{{ header.schema_location }}"
+        {% endif %}
+        schemaVersion="1.2" creationDate="{{ created_date }}">
+    {% block header %}
+    {% if header %}
+    <EPCISHeader>
+    {% include "quartet_tracelink/sbdh.xml" %}
+    {% include "quartet_tracelink/masterdata.xml" %}
+    </EPCISHeader>
+    {% endif %}
+    {% endblock %}
+    <EPCISBody>
+        <EventList>
+            {% block events %}
+                {% if template_events|length > 0 %}
+                    {% for event in template_events %}
+                        {% include event.template %}
+                    {% endfor %}
+                {% endif %}
+                {% if transformation_events|length > 0 %}
+                     <extension>
+                    {% for event in transformation_events %}
+                        {% include event.template %}
+                    {% endfor %}
+                     </extension>
+                {% endif %}
+            {% endblock %}
+        </EventList>
+    </EPCISBody>
+</epcis:EPCISDocument>

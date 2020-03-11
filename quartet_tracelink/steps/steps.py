@@ -68,11 +68,13 @@ class OutputParsingStep(steps.OutputParsingStep):
     def __init__(self, db_task: models.Task, **kwargs):
         super().__init__(db_task, **kwargs)
         self.data_parser = None
+        self.get_or_create_parameter('SENDER_GLN', '', 'The sender GLN13 if '
+                                                       'necessary.')
 
     def execute(self, data, rule_context: rules.RuleContext):
         ret = super().execute(data, rule_context)
-        if getattr(self.parser, 'sender_gln'):
-            rule_context.context['SENDER_GLN'] = self.parser.sender_gln
+        if getattr(self.parser, 'receiver_gln'):
+            rule_context.context['RECEIVER_GLN'] = self.parser.receiver_gln
         return ret
 
     def get_parser_type(self, *args):
