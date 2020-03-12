@@ -89,6 +89,7 @@ class OutputParsingStep(steps.OutputParsingStep):
         self.info('instantiating parser...')
         self.parser = super().instantiate_parser(data, parser_type,
                                                  skip_parsing)
+        parser.info_func = self.info
         return self.parser
 
 

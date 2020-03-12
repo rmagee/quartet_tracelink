@@ -35,6 +35,7 @@ class TraceLinkEPCISParser(BusinessOutputParser):
                          recursive_decommission, skip_parsing)
         self.receiver_gln = None
         self.have_checked_company = False
+        self.info_func = None
 
     def get_epcpyyes_object_event(self):
         return template_events.ObjectEvent(
@@ -53,6 +54,7 @@ class TraceLinkEPCISParser(BusinessOutputParser):
                 company = Company.objects.get(gs1_company_prefix=company_prefix)
                 self.receiver_gln = company.GLN13
             except Company.DoesNotExist:
+                self.info('could not find a company for prefix %s', company_prefix)
                 logger.debug('Could not find the company for company prefix '
                              '%s ', company_prefix)
 
@@ -60,3 +62,7 @@ class TraceLinkEPCISParser(BusinessOutputParser):
     #     if "transferredToId" in child.tag:
     #         logger.debug('Found a sender GLN')
     #         self.receiver_gln = child.text.strip()
+
+    def info(self, *args):
+        if self.info_func:
+            self.info_func(*args)
