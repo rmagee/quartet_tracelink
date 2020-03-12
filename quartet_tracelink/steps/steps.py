@@ -76,6 +76,7 @@ class OutputParsingStep(steps.OutputParsingStep):
         rule_context.context['SENDER_GLN'] = self.get_parameter('Sender GLN','')
         if getattr(self.parser, 'receiver_gln'):
             rule_context.context['RECEIVER_GLN'] = self.parser.receiver_gln
+            self.info('RECEIVER_GLN is %s', self.parser.receiver_gln)
         return ret
 
     def get_parser_type(self, *args):
