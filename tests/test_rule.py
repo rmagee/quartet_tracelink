@@ -135,6 +135,7 @@ class TestRules(TestCase):
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
         self._create_tracelink_epcpyyes_step_2(db_rule)
+        self._create_output_company()
         self._create_task_step(db_rule)
         db_rule2 = self._create_transport_rule()
         self._create_transport_step(db_rule2)
@@ -273,7 +274,7 @@ class TestRules(TestCase):
 
     def _create_sftp_endpoint(self):
         ep = models.EndPoint()
-        ep.urn = 'sftp://testsftphost:22/upload'
+        ep.urn = 'sftp://testsftphost:5022/upload'
         ep.name = 'Test EndPoint'
         ep.save()
         return ep
@@ -427,6 +428,13 @@ class TestRules(TestCase):
             step=step
         )
 
+
+    def _create_output_company(self):
+        Company.objects.create(
+            name='testsmella',
+            gs1_company_prefix='0349884',
+            GLN13='0342192777777'
+        )
 
     def _create_company_from_sgln(self, sgln, type=Company):
         from gs123.check_digit import calculate_check_digit

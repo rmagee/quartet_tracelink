@@ -234,6 +234,7 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             rule_context.context[
                 ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value
             ] = data
+            return data
 
     def convert_dates(self, event, increment_dates=False, increment_val=0):
         if event.event_time.endswith(
