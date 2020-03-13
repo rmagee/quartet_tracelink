@@ -86,7 +86,7 @@ class OutputParsingStep(steps.OutputParsingStep):
         return TraceLinkEPCISParser
 
     def instantiate_parser(self, data, parser_type, skip_parsing):
-        self.info('instantiating parser...')
+        self.info('instantiating parser...skip parser set to % ' % skip_parsing)
         self.parser = super().instantiate_parser(data, parser_type,
                                                  skip_parsing)
         parser.info_func = self.info
