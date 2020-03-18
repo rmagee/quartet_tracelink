@@ -6,8 +6,8 @@
                 <eventTime>2019-11-25T21:43:55.888Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
                 <epcList>
-                    <epc>urn:epc:id:sscc:0952696005.0002342785</epc>
-                    <epc>urn:epc:id:sscc:0952696005.0002342786</epc>
+                    <epc>urn:epc:id:sscc:0952696.0002342785</epc>
+                    <epc>urn:epc:id:sscc:0952696.0002342786</epc>
                 </epcList>
                 <action>OBSERVE</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:shipping</bizStep>

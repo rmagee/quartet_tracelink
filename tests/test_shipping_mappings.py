@@ -139,7 +139,7 @@ class TestOutputMappings(TransactionTestCase):
 
     def create_outbound_mapping(self):
         company = Company.objects.get(
-            gs1_company_prefix='0952696005'
+            gs1_company_prefix='0952696'
         )
         ship_from_co = Company.objects.get(
             gs1_company_prefix='0651991'

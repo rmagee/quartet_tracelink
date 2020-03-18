@@ -274,7 +274,7 @@ class TestRules(TestCase):
 
     def _create_sftp_endpoint(self):
         ep = models.EndPoint()
-        ep.urn = 'sftp://testsftphost:5022/upload'
+        ep.urn = 'sftp://testsftphost:1001/upload'
         ep.name = 'Test EndPoint'
         ep.save()
         return ep
@@ -422,12 +422,6 @@ class TestRules(TestCase):
         step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
                            'context.'
         step.save()
-        sp = StepParameter.objects.create(
-            name='Template Path',
-            value='quartet_tracelink/tracelink_epcis_events_document_gln_header.xml',
-            step=step
-        )
-
 
     def _create_output_company(self):
         Company.objects.create(

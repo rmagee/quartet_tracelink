@@ -17,24 +17,24 @@
                 <eventTime>2018-11-15T19:16:39.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
                 <epcList>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.103072864711</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122985633768</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.160924822073</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.208889038935</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.219864563312</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.251622160128</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122174170307</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.162601482287</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.174561681027</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.197036131392</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.211733039805</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.221362414417</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.116283214123</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.175577646320</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202878048266</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202954274244</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.231103867573</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.254837052187</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.103072864711</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122985633768</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.160924822073</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.208889038935</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.219864563312</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.251622160128</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122174170307</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.162601482287</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.174561681027</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.197036131392</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.211733039805</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.221362414417</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.116283214123</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.175577646320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202878048266</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202954274244</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.231103867573</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.254837052187</epc>
                 </epcList>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
@@ -57,9 +57,9 @@
                 <eventTime>2018-11-15T19:16:39.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
                 <epcList>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.131289668804</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.256090315219</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.225639465320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.131289668804</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.256090315219</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.225639465320</epc>
                 </epcList>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
@@ -82,8 +82,8 @@
                 <eventTime>2018-11-15T19:16:39.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
                 <epcList>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.191991848144</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.152236057603</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.191991848144</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.152236057603</epc>
                 </epcList>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
@@ -106,8 +106,8 @@
                 <eventTime>2018-11-15T19:16:39.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
                 <epcList>
-                    <epc>urn:epc:id:sscc:0952696005.0002342785</epc>
-                    <epc>urn:epc:id:sscc:0952696005.0002342786</epc>
+                    <epc>urn:epc:id:sscc:0952696.0002342785</epc>
+                    <epc>urn:epc:id:sscc:0952696.0002342786</epc>
                 </epcList>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
@@ -122,9 +122,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342785</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342785</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.191991848144</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.191991848144</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -139,11 +139,11 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.191991848144
+                <parentID>urn:epc:id:sgtin:0952696.460301.191991848144
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.131289668804</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.256090315219</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.131289668804</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.256090315219</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -158,15 +158,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.131289668804
+                <parentID>urn:epc:id:sgtin:0952696.260301.131289668804
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.103072864711</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122985633768</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.160924822073</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.208889038935</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.219864563312</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.251622160128</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.103072864711</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122985633768</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.160924822073</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.208889038935</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.219864563312</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.251622160128</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -181,15 +181,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.256090315219
+                <parentID>urn:epc:id:sgtin:0952696.260301.256090315219
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122174170307</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.162601482287</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.174561681027</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.197036131392</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.211733039805</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.221362414417</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122174170307</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.162601482287</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.174561681027</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.197036131392</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.211733039805</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.221362414417</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -204,9 +204,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342786</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342786</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.152236057603</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.152236057603</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -221,10 +221,10 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.152236057603
+                <parentID>urn:epc:id:sgtin:0952696.460301.152236057603
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.225639465320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.225639465320</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -239,15 +239,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.225639465320
+                <parentID>urn:epc:id:sgtin:0952696.260301.225639465320
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.116283214123</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.175577646320</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202878048266</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202954274244</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.231103867573</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.254837052187</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.116283214123</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.175577646320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202878048266</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202954274244</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.231103867573</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.254837052187</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -262,9 +262,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342785</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342785</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.191991848144</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.191991848144</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -279,11 +279,11 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.191991848144
+                <parentID>urn:epc:id:sgtin:0952696.460301.191991848144
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.131289668804</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.256090315219</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.131289668804</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.256090315219</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -298,15 +298,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.131289668804
+                <parentID>urn:epc:id:sgtin:0952696.260301.131289668804
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.103072864711</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122985633768</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.160924822073</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.208889038935</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.219864563312</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.251622160128</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.103072864711</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122985633768</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.160924822073</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.208889038935</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.219864563312</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.251622160128</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -321,15 +321,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.256090315219
+                <parentID>urn:epc:id:sgtin:0952696.260301.256090315219
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122174170307</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.162601482287</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.174561681027</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.197036131392</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.211733039805</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.221362414417</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122174170307</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.162601482287</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.174561681027</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.197036131392</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.211733039805</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.221362414417</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -344,9 +344,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342786</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342786</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.152236057603</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.152236057603</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -361,10 +361,10 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.152236057603
+                <parentID>urn:epc:id:sgtin:0952696.460301.152236057603
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.225639465320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.225639465320</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -379,15 +379,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.225639465320
+                <parentID>urn:epc:id:sgtin:0952696.260301.225639465320
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.116283214123</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.175577646320</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202878048266</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202954274244</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.231103867573</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.254837052187</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.116283214123</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.175577646320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202878048266</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202954274244</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.231103867573</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.254837052187</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -402,9 +402,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342785</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342785</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.191991848144</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.191991848144</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -419,11 +419,11 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.191991848144
+                <parentID>urn:epc:id:sgtin:0952696.460301.191991848144
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.131289668804</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.256090315219</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.131289668804</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.256090315219</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -438,15 +438,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.131289668804
+                <parentID>urn:epc:id:sgtin:0952696.260301.131289668804
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.103072864711</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122985633768</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.160924822073</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.208889038935</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.219864563312</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.251622160128</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.103072864711</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122985633768</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.160924822073</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.208889038935</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.219864563312</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.251622160128</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -461,15 +461,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.256090315219
+                <parentID>urn:epc:id:sgtin:0952696.260301.256090315219
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122174170307</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.162601482287</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.174561681027</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.197036131392</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.211733039805</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.221362414417</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122174170307</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.162601482287</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.174561681027</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.197036131392</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.211733039805</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.221362414417</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -484,9 +484,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342786</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342786</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.152236057603</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.152236057603</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -501,10 +501,10 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.152236057603
+                <parentID>urn:epc:id:sgtin:0952696.460301.152236057603
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.225639465320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.225639465320</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -519,15 +519,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.225639465320
+                <parentID>urn:epc:id:sgtin:0952696.260301.225639465320
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.116283214123</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.175577646320</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202878048266</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202954274244</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.231103867573</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.254837052187</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.116283214123</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.175577646320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202878048266</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202954274244</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.231103867573</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.254837052187</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -542,9 +542,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342785</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342785</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.191991848144</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.191991848144</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -559,11 +559,11 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.191991848144
+                <parentID>urn:epc:id:sgtin:0952696.460301.191991848144
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.131289668804</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.256090315219</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.131289668804</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.256090315219</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -578,15 +578,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.131289668804
+                <parentID>urn:epc:id:sgtin:0952696.260301.131289668804
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.103072864711</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122985633768</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.160924822073</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.208889038935</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.219864563312</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.251622160128</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.103072864711</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122985633768</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.160924822073</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.208889038935</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.219864563312</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.251622160128</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -601,15 +601,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.256090315219
+                <parentID>urn:epc:id:sgtin:0952696.260301.256090315219
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.122174170307</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.162601482287</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.174561681027</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.197036131392</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.211733039805</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.221362414417</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.122174170307</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.162601482287</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.174561681027</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.197036131392</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.211733039805</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.221362414417</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -624,9 +624,9 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sscc:0952696005.0002342786</parentID>
+                <parentID>urn:epc:id:sscc:0952696.0002342786</parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.460301.152236057603</epc>
+                    <epc>urn:epc:id:sgtin:0952696.460301.152236057603</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -641,10 +641,10 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.460301.152236057603
+                <parentID>urn:epc:id:sgtin:0952696.460301.152236057603
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.260301.225639465320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.260301.225639465320</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
@@ -659,15 +659,15 @@
             <AggregationEvent>
                 <eventTime>2018-11-15T19:16:40.247Z</eventTime>
                 <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
-                <parentID>urn:epc:id:sgtin:0952696005.260301.225639465320
+                <parentID>urn:epc:id:sgtin:0952696.260301.225639465320
                 </parentID>
                 <childEPCs>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.116283214123</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.175577646320</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202878048266</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.202954274244</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.231103867573</epc>
-                    <epc>urn:epc:id:sgtin:0952696005.060301.254837052187</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.116283214123</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.175577646320</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202878048266</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.202954274244</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.231103867573</epc>
+                    <epc>urn:epc:id:sgtin:0952696.060301.254837052187</epc>
                 </childEPCs>
                 <action>ADD</action>
                 <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
