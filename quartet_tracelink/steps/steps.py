@@ -259,7 +259,7 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             rule_context.context[
                 ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value
             ] = data
-            self.info('Data (first 2000 characters): %s', data)
+            self.info('Data (first 2000 characters): %s', data[:1000])
 
     def convert_dates(self, event, increment_dates=False, increment_val=0):
         if event.event_time.endswith(
