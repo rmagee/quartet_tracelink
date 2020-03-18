@@ -128,10 +128,15 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                       receiver_sgln=None, doc_id_standard='EPCGlobal',
                       doc_id_type_version='1.0',
                       doc_id_instance_identifier=None, doc_id_type='Events',
-                      creation_date_and_time=None):
+                      creation_date_and_time=None,
+                      sender_gln = None,
+                      receiver_gln = None,
+                      ):
         '''
         Slap in an SBDH.
         '''
+        sender = None
+        receiver = None
         if sender_sgln and receiver_sgln:
             sender = sbdh.Partner(sbdh.PartnerType.SENDER,
                                   sbdh.PartnerIdentification('GLN',
@@ -141,6 +146,17 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                                     sbdh.PartnerIdentification('GLN',
                                                                self.get_gln_from_sgln(
                                                                    receiver_sgln)))
+        elif sender_gln and receiver_gln:
+            sender = sbdh.Partner(
+                sbdh.PartnerType.SENDER,
+                sbdh.PartnerIdentification('GLN', sender_gln)
+            )
+            receiver = sbdh.Partner(
+                sbdh.PartnerType.RECEIVER,
+                sbdh.PartnerIdentification('GLN', receiver_gln)
+            )
+
+        if sender and receiver:
             partner_list = [sender, receiver]
             creation_date_and_time = creation_date_and_time or datetime.utcnow().isoformat()
             creation_date_and_time = self.format_datetime(
@@ -221,7 +237,14 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 'RECEIVER_GLN': rule_context.context.get('RECEIVER_GLN'),
                 'SENDER_GLN': rule_context.context.get('SENDER_GLN')
             }
-            self.info('Additional context: %s', additional_context)
+            if additional_context['RECEIVER_GLN'] and additional_context['SENDER_GLN']:
+                self.info('Using the values in the context to generate the '
+                          'header.')
+                sbdh_out = self.generate_sbdh(
+                    receiver_gln=rule_context.context.get('RECEIVER_GLN'),
+                    sender_gln=rule_context.context.get('SENDER_GLN')
+                )
+                self.info('SBDH: %s', sbdh_out)
             self.info('Template path: %s', template_path)
             epcis_document = template_events.EPCISEventListDocument(
                 all_events,
