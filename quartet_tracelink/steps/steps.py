@@ -222,6 +222,7 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 'SENDER_GLN': rule_context.context.get('SENDER_GLN')
             }
             self.info('Additional context: %s', additional_context)
+            self.info('Template path: %s', template_path)
             epcis_document = template_events.EPCISEventListDocument(
                 all_events,
                 sbdh_out,
