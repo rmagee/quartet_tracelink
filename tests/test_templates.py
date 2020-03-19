@@ -91,7 +91,8 @@ class TestQuartet_tr4c3l1nk(TestCase):
                             destination_list, epcs, now, read_point,
                             source_list, tzoffset, action=None, ilmd=None,
                             biz_step=BusinessSteps.commissioning.value,
-                            additional_context={}):
+                            additional_context={},
+                            template='quartet_tracelink/disposition_assigned.xml'):
         env = get_default_environment()
         # create the event
         event_id = str(uuid.uuid4())
@@ -109,12 +110,14 @@ class TestQuartet_tr4c3l1nk(TestCase):
                          ilmd=ilmd,
                          event_id=event_id,
                          env=env,
-                         template='quartet_tracelink/disposition_assigned.xml')
+                         template=template)
         if len(additional_context) > 0:
             oe._context = {**oe._context, **additional_context}
         return oe
 
-    def create_object_event_template(self, biz_step=BusinessSteps.commissioning.value):
+    def create_object_event_template(self, biz_step=BusinessSteps.commissioning.value,
+                                     template='quartet_tracelink/disposition_assigned.xml'
+                                     ):
         epcs = self.create_epcs()
         # get the current time and tz
         now, tzoffset = get_current_utc_time_and_offset()
@@ -133,7 +136,8 @@ class TestQuartet_tr4c3l1nk(TestCase):
                                       destination_list, epcs, now, read_point,
                                       source_list, tzoffset,
                                       action=Action.add.value,
-                                      ilmd=ilmd, biz_step=biz_step)
+                                      ilmd=ilmd, biz_step=biz_step,
+                                      template=template)
         oe.clean()
         return oe
 
@@ -149,6 +153,36 @@ class TestQuartet_tr4c3l1nk(TestCase):
         self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1000</epc>', data,
                       'URN for start SGTIN not present.')
         self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1001</epc>', data,
+                      'URN for start SGTIN not present.')
+        self.assertIn('<action>ADD</action>', data,
+                      'EPCIS action not present.')
+        self.assertIn(BusinessSteps.commissioning.value, data,
+                      'Business step not present')
+        self.assertIn(Disposition.encoded.value, data,
+                      'Disposition not present')
+
+    def test_object_event_template_common_attributes(self):
+        oe = self.create_object_event_template(
+            template='quartet_tracelink/common_attributes.xml'
+        )
+        # render the event using it's default template
+        data = oe.render()
+        print(oe.render_json())
+        print(oe.render_pretty_json())
+        print(data)
+        # make sure the data we want is there
+        self.assertTrue("""<tl:commonAttributes>
+            <tl:itemDetail>
+                <tl:lot>2015-12-31</tl:lot>
+                <tl:expiry>DL232</tl:expiry>
+                <tl:countryDrugCode type="US_NDC532">XXXXX-XXX-XX</tl:countryDrugCode>
+            </tl:itemDetail>
+        </tl:commonAttributes>""" in data)
+        self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1000</epc>',
+                      data,
+                      'URN for start SGTIN not present.')
+        self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1001</epc>',
+                      data,
                       'URN for start SGTIN not present.')
         self.assertIn('<action>ADD</action>', data,
                       'EPCIS action not present.')
