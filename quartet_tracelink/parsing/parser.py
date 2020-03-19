@@ -30,18 +30,20 @@ class TraceLinkEPCISParser(BusinessOutputParser):
 
     def __init__(self, stream, epcis_output_criteria: EPCISOutputCriteria,
                  event_cache_size: int = 1024,
-                 recursive_decommission: bool = True, skip_parsing=False):
+                 recursive_decommission: bool = True, skip_parsing=False,
+                 object_event_template = None):
         super().__init__(stream, epcis_output_criteria, event_cache_size,
                          recursive_decommission, skip_parsing)
         self.receiver_gln = None
         self.have_checked_company = False
         self.info_func = None
+        self.object_event_template = object_event_template or 'quartet_tracelink/disposition_assigned.xml'
 
     def get_epcpyyes_object_event(self):
         return template_events.ObjectEvent(
             epc_list=[], quantity_list=[],
             env=get_default_environment(),
-            template='quartet_tracelink/disposition_assigned.xml'
+            template=self.object_event_template
         )
 
     def handle_object_event(self, epcis_event: yes_events.ObjectEvent):

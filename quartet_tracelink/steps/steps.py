@@ -70,10 +70,17 @@ class OutputParsingStep(steps.OutputParsingStep):
         self.data_parser = None
         self.get_or_create_parameter('Sender GLN', '', 'The sender GLN13 if '
                                                        'necessary.')
+        self.object_event_template = self.get_or_create_parameter(
+            'Object Event Template',
+            'quartet_tracelink/disposition_assigned.xml',
+            'The template to use to render object events.  Should be a '
+            'template path- not a quartet_templates template name.'
+        )
 
     def execute(self, data, rule_context: rules.RuleContext):
         ret = super().execute(data, rule_context)
-        rule_context.context['SENDER_GLN'] = self.get_parameter('Sender GLN','')
+        rule_context.context['SENDER_GLN'] = self.get_parameter('Sender GLN',
+                                                                '')
         if getattr(self.parser, 'receiver_gln'):
             rule_context.context['RECEIVER_GLN'] = self.parser.receiver_gln
             self.info('RECEIVER_GLN is %s', self.parser.receiver_gln)
@@ -86,10 +93,12 @@ class OutputParsingStep(steps.OutputParsingStep):
         return TraceLinkEPCISParser
 
     def instantiate_parser(self, data, parser_type, skip_parsing):
-        self.info('instantiating parser...skip parser set to %s ' % skip_parsing)
+        self.info(
+            'instantiating parser...skip parser set to %s ' % skip_parsing)
         self.parser = super().instantiate_parser(data, parser_type,
                                                  skip_parsing)
         parser.info_func = self.info
+        parser.object_event_template = self.object_event_template
         return self.parser
 
 
@@ -129,8 +138,8 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                       doc_id_type_version='1.0',
                       doc_id_instance_identifier=None, doc_id_type='Events',
                       creation_date_and_time=None,
-                      sender_gln = None,
-                      receiver_gln = None,
+                      sender_gln=None,
+                      receiver_gln=None,
                       ):
         '''
         Slap in an SBDH.
@@ -237,7 +246,8 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 'RECEIVER_GLN': rule_context.context.get('RECEIVER_GLN'),
                 'SENDER_GLN': rule_context.context.get('SENDER_GLN')
             }
-            if additional_context['RECEIVER_GLN'] and additional_context['SENDER_GLN']:
+            if additional_context['RECEIVER_GLN'] and additional_context[
+                'SENDER_GLN']:
                 self.info('Using the values in the context to generate the '
                           'header.')
                 sbdh_out = self.generate_sbdh(

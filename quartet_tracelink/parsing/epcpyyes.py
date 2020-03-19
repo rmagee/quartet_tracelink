@@ -54,7 +54,7 @@ class ObjectEvent(template_events.ObjectEvent):
                  quantity_list: list = None, env: Environment = None,
                  template: str = None, render_xml_declaration=None):
         env = get_default_environment()
-        template = 'quartet_tracelink/disposition_assigned.xml'
+        template = template or 'quartet_tracelink/disposition_assigned.xml'
         super().__init__(event_time, event_timezone_offset, record_time,
                          action, epc_list, biz_step, disposition, read_point,
                          biz_location, event_id, error_declaration,

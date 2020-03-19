@@ -1,0 +1,24 @@
+<ObjectEvent>
+    {% include "epcis/event_times.xml" %}
+    {% include "epcis/base_extension.xml" %}
+    {% if event.epc_list %}
+        <epcList>
+            {% for epc in event.epc_list %}
+                <epc>{{ epc }}</epc>
+            {% endfor %}
+        </epcList>
+    {% endif %}
+    {% include "epcis/business_data.xml" %}
+    {% include "epcis/extension.xml" %}
+    {% if additional_context and event.biz_step and 'shipping' in event.biz_step %}
+        {% include "quartet_tracelink/shipping_event_extension.xml" %}
+    {% else %}
+        <tl:commonAttributes>
+            <tl:itemDetail>
+                <tl:lot>{{ event.ilmd.0.value }}</tl:lot>
+                <tl:expiry>{{ event.ilmd.1.value }}</tl:expiry>
+                <tl:countryDrugCode type="US_NDC532">XXXXX-XXX-XX</tl:countryDrugCode>
+            </tl:itemDetail>
+        </tl:commonAttributes>
+    {% endif %}
+</ObjectEvent>
