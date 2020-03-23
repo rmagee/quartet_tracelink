@@ -112,7 +112,7 @@ def create_output_filter_rule(rule_name='Tracelink Delayed Output Filter',
                 description=_('Whether or not to preform any transformations '
                               'on the business transaction section.  Default:'
                               'False.  Set to True or False.'),
-                step = render_events
+                step=render_events
             )
             trans_source_type = models.StepParameter.objects.create(
                 name='Transaction Source Type',
@@ -165,6 +165,7 @@ def create_output_filter_rule(rule_name='Tracelink Delayed Output Filter',
                                            add_delay=delay_rule)
         sdstep = create_transport_rule()
         return rule
+
 
 def create_transport_rule(rule_name='Transport Rule', add_delay=False):
     try:
@@ -238,6 +239,7 @@ def create_criteria(endpoint_name='Local Echo Server',
     except IntegrityError:
         print('Criteria already exists.')
 
+
 def create_itest_endpoint():
     try:
         EndPoint.objects.create(
@@ -246,3 +248,114 @@ def create_itest_endpoint():
         )
     except IntegrityError:
         print('Tracelink SNX Request endpoing already exists.')
+
+
+def create_output_step(rule, order=1, skip_parsing='True',
+                       criteria_name='Tracelink Output Shipping Criteria'
+                       ):
+    step = models.Step()
+    step.rule = rule
+    step.order = order
+    step.name = 'Output Determination'
+    step.step_class = 'quartet_tracelink.steps.OutputParsingStep'
+    step.description = 'unit test step'
+    step.save()
+    step_parameter = models.StepParameter()
+    step_parameter.step = step
+    step_parameter.name = 'EPCIS Output Criteria'
+    step_parameter.value = criteria_name
+    step_parameter.save()
+    models.StepParameter.objects.create(
+        step=step,
+        name='Skip Parsing',
+        value=skip_parsing
+    )
+
+
+def create_agg_step(rule):
+    step = models.Step()
+    step.rule = rule
+    step.order = 3
+    step.name = 'UnpackHierarchies'
+    step.step_class = 'quartet_output.steps.UnpackHierarchyStep'
+    step.description = 'Unpack Hierarchies Step'
+    step.save()
+
+
+def create_comm_step(rule):
+    step = models.Step()
+    step.rule = rule
+    step.order = 2
+    step.name = 'CreateCommissioning'
+    step.step_class = 'quartet_tracelink.steps.AddCommissioningDataStep'
+    step.description = 'Retrieve all commissioning info.'
+    step.save()
+
+
+def create_tracelink_epcpyyes_step(rule, append_events='False'):
+    step = models.Step()
+    step.rule = rule
+    step.order = 4
+    step.name = 'Create EPCIS'
+    step.step_class = 'quartet_tracelink.steps.TraceLinkCommonAttributesOutputStep'
+    step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
+                       'context.'
+    step.save()
+    models.StepParameter.objects.create(
+        step=step,
+        name='Append Filtered Events',
+        value=append_events
+    )
+
+
+def create_task_step(rule, order=5, transport_rule='Transport Rule'):
+    step = models.Step()
+    step.rule = rule
+    step.order = order
+    step.name = 'Create Output Task'
+    step.step_class = 'quartet_output.steps.CreateOutputTaskStep'
+    step.description = 'Looks for any EPCIS data on the context and ' \
+                       'then, if found, creates a new output task using ' \
+                       'the configured Output Rule step parameter.'
+    step.save()
+    step_parameter = models.StepParameter()
+    step_parameter.step = step
+    step_parameter.name = 'Output Rule'
+    step_parameter.value = transport_rule
+    step_parameter.description = 'The name of the rule to create a new ' \
+                                 'task with.'
+    step_parameter.save()
+    step_parameter = models.StepParameter()
+    step_parameter.step = step
+    step_parameter.name = 'run-immediately'
+    step_parameter.value = 'False'
+    step_parameter.description = 'The name of the rule to create a new ' \
+                                 'task with.'
+    step_parameter.save()
+    return step
+
+def create_render_shipping_step(rule):
+    step = models.Step()
+    step.rule = rule
+    step.order = 7
+    step.name = 'Render Shipping'
+    step.step_class = 'quartet_tracelink.steps.TradingPartnerMappingOutputStep'
+    step.description = 'Renders a shipping event with partner mappings.'
+    step.save()
+    return step
+
+def create_common_attributes_rule():
+    rule = models.Rule.objects.create(
+        name='Tracelink Common Attributes Delayed',
+        description='A common attributes rule'
+    )
+    create_output_step(rule)
+    create_comm_step(rule)
+    create_agg_step(rule)
+    create_tracelink_epcpyyes_step(rule)
+    create_task_step(rule)
+    create_output_step(rule, skip_parsing='False', order=6,
+                       criteria_name='Tracelink Shipping')
+    create_render_shipping_step(rule)
+    create_task_step(rule, order=8, transport_rule='Delayed Transport Rule')
+

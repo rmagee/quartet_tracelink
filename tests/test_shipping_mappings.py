@@ -100,27 +100,6 @@ class TestOutputMappings(TransactionTestCase):
             self.assertTrue('<tl:fromBusiness>' in
                             context.context['OUTBOUND_EPCIS_MESSAGE'])
 
-    # def test_dynamic_template_2(self):
-    #     StepParameter.objects.create(
-    #         name='Template',
-    #         value='unit test template 2',
-    #         step=self.render_step
-    #     )
-    #     curpath = os.path.dirname(__file__)
-    #     file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
-    #
-    #     with open(file_path, "rb") as f:
-    #         rule = Rule.objects.get(name='test rule')
-    #         db_task = Task.objects.create(
-    #             rule=rule
-    #         )
-    #         context = execute_rule(f.read(), db_task)
-    #         self.assertTrue('<tl:businessId type="GLN">0651991000000'
-    #                         '</tl:businessId>' in
-    #                         context.context['OUTBOUND_EPCIS_MESSAGE'])
-    #         self.assertTrue('<tl:fromBusiness>' in
-    #                         context.context['OUTBOUND_EPCIS_MESSAGE'])
-
     def test_outbound_mapping(self):
         curpath = os.path.dirname(__file__)
         file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
@@ -191,11 +170,6 @@ class TestOutputMappings(TransactionTestCase):
         step.step_class = 'quartet_tracelink.steps.TradingPartnerMappingOutputStep'
         step.description = 'unit test step'
         step.save()
-        step_parameter = StepParameter()
-        step_parameter.step = step
-        step_parameter.name = 'EPCIS Output Criteria'
-        step_parameter.value = criteria_name
-        step_parameter.save()
         self.render_step = step
         return step
 
