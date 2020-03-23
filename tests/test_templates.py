@@ -115,7 +115,8 @@ class TestQuartet_tr4c3l1nk(TestCase):
             oe._context = {**oe._context, **additional_context}
         return oe
 
-    def create_object_event_template(self, biz_step=BusinessSteps.commissioning.value,
+    def create_object_event_template(self,
+                                     biz_step=BusinessSteps.commissioning.value,
                                      template='quartet_tracelink/disposition_assigned.xml'
                                      ):
         epcs = self.create_epcs()
@@ -165,19 +166,26 @@ class TestQuartet_tr4c3l1nk(TestCase):
         oe = self.create_object_event_template(
             template='quartet_tracelink/common_attributes.xml'
         )
+        oe.lot = 'DL232'
+        oe.expiry = '2015-12-31'
+        oe.packaging_uom = 'EA'
+        oe.NDC = '55555-594-15'
+        oe.NDC_pattern = 'US_NDC532'
+        oe.is_gtin = True
+        oe.packaging_line = 'Line1'
         # render the event using it's default template
         data = oe.render()
         print(oe.render_json())
         print(oe.render_pretty_json())
         print(data)
         # make sure the data we want is there
-        self.assertTrue("""<tl:commonAttributes>
-            <tl:itemDetail>
-                <tl:lot>2015-12-31</tl:lot>
-                <tl:expiry>DL232</tl:expiry>
-                <tl:countryDrugCode type="US_NDC532">XXXXX-XXX-XX</tl:countryDrugCode>
-            </tl:itemDetail>
-        </tl:commonAttributes>""" in data)
+        self.assertTrue("""<tl:productionLineId>Line1</tl:productionLineId>
+<tl:itemDetail>
+    <tl:lot>DL232</tl:lot>
+    <tl:expiry>2015-12-31</tl:expiry>
+    <tl:countryDrugCode type="US_NDC532">55555-594-15</tl:countryDrugCode>
+</tl:itemDetail>
+</tl:commonAttributes>""" in data)
         self.assertIn('<epc>urn:epc:id:sgtin:305555.1555555.1000</epc>',
                       data,
                       'URN for start SGTIN not present.')
@@ -192,7 +200,8 @@ class TestQuartet_tr4c3l1nk(TestCase):
                       'Disposition not present')
 
     def test_shipping_event_template(self):
-        oe = self.create_object_event_template(biz_step=BusinessSteps.shipping.value)
+        oe = self.create_object_event_template(
+            biz_step=BusinessSteps.shipping.value)
         # render the event using it's default template
         data = oe.render()
         print(oe.render_json())
