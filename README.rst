@@ -10,7 +10,7 @@ quartet_tracelink
     :target: https://badge.fury.io/py/quartet_tracelink
 
 An EPCIS to TraceLink Codec that overcomes (or tries to) many of the
-quirks and well-known shortcomings of the Tracelink EPCIS interface.
+quirks, garbage, non-standard BS and other well-known shortcomings of the Tracelink EPCIS interface.
 
 Documentation
 -------------

@@ -15,7 +15,6 @@
 import re
 from datetime import datetime
 from datetime import timedelta
-
 from dateutil import parser
 from pytz import timezone
 
@@ -28,12 +27,13 @@ from gs123.regex import urn_patterns
 from quartet_capture import models, rules
 from quartet_capture.rules import RuleContext
 from quartet_masterdata.db import DBProxy
-from quartet_masterdata.models import Company, OutboundMapping
+from quartet_masterdata.models import Company
 from quartet_output import steps
+from quartet_output.steps import DynamicTemplateMixin
 from quartet_output.steps import EPCPyYesOutputStep, ContextKeys
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
-from quartet_tracelink.parsing.parser import TraceLinkEPCISParser
-from quartet_output.steps import DynamicTemplateMixin
+from quartet_tracelink.parsing.parser import TraceLinkEPCISParser, \
+    TraceLinkEPCISCommonAttributesParser
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
@@ -68,23 +68,12 @@ class OutputParsingStep(steps.OutputParsingStep):
     def __init__(self, db_task: models.Task, **kwargs):
         super().__init__(db_task, **kwargs)
         self.data_parser = None
-        self.get_or_create_parameter('Sender GLN', '', 'The sender GLN13 if '
-                                                       'necessary.')
         self.object_event_template = self.get_or_create_parameter(
             'Object Event Template',
             'quartet_tracelink/disposition_assigned.xml',
             'The template to use to render object events.  Should be a '
             'template path- not a quartet_templates template name.'
         )
-
-    def execute(self, data, rule_context: rules.RuleContext):
-        ret = super().execute(data, rule_context)
-        rule_context.context['SENDER_GLN'] = self.get_parameter('Sender GLN',
-                                                                '')
-        if getattr(self.parser, 'receiver_gln'):
-            rule_context.context['RECEIVER_GLN'] = self.parser.receiver_gln
-            self.info('RECEIVER_GLN is %s', self.parser.receiver_gln)
-        return ret
 
     def get_parser_type(self, *args):
         """
@@ -107,6 +96,14 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
     Will look for any EPCPyYes events in the context and render them to
     XML or JSON depending on the step parameter configuration.
     """
+
+    def __init__(self, db_task: models.Task, **kwargs):
+        super().__init__(db_task, **kwargs)
+        self.object_event_template = self.get_or_create_parameter(
+            'Object Event Template',
+            'quartet_tracelink/disposition_assigned.xml',
+            'The template to use when rendering '
+            'object events.')
 
     def get_gln_from_company(self, sgln):
         '''
@@ -148,13 +145,17 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
         receiver = None
         if sender_sgln and receiver_sgln:
             sender = sbdh.Partner(sbdh.PartnerType.SENDER,
-                                  sbdh.PartnerIdentification('GLN',
-                                                             self.get_gln_from_sgln(
-                                                                 sender_sgln)))
+                                  sbdh.PartnerIdentification(
+                                      'GLN',
+                                      self.get_gln_from_sgln(
+                                          sender_sgln))
+                                  )
             receiver = sbdh.Partner(sbdh.PartnerType.RECEIVER,
-                                    sbdh.PartnerIdentification('GLN',
-                                                               self.get_gln_from_sgln(
-                                                                   receiver_sgln)))
+                                    sbdh.PartnerIdentification(
+                                        'GLN',
+                                        self.get_gln_from_sgln(
+                                            receiver_sgln))
+                                    )
         elif sender_gln and receiver_gln:
             sender = sbdh.Partner(
                 sbdh.PartnerType.SENDER,
@@ -197,6 +198,7 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
         :param rule_context: The RuleContext containing any filtered events
         and also any EPCPyYes events that were created by prior steps.
         """
+        self.pre_execute(rule_context)
         env = get_default_environment()
         self.rule_context = rule_context
         append_filtered_events = self.get_boolean_parameter(
@@ -209,6 +211,9 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
         )
         oevents = rule_context.context.get(ContextKeys.OBJECT_EVENTS_KEY.value,
                                            [])
+        for event in oevents:
+            event.template = self.object_event_template
+
         aggevents = rule_context.context.get(
             ContextKeys.AGGREGATION_EVENTS_KEY.value, [])
         if append_filtered_events:
@@ -287,6 +292,13 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             event.record_time = self.format_datetime(event.record_time,
                                                      increment_dates,
                                                      increment_val)
+
+    def pre_execute(self, rule_context: RuleContext):
+        """
+        Override to do anything with filtered events, etc. before execution.
+        :return: None
+        """
+        pass
 
     def get_sgln_info(self, event):
         """
@@ -471,42 +483,3 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
 
     def on_failure(self):
         pass
-
-
-class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
-
-    def get_mapping(self, filtered_event):
-        '''
-        Will look for trading partner mappings by pulling the company prefix
-        out of the first epc in the message and look up that company in
-        the quartet master_material company mapping model.
-        :param urns: The urns in the current filtered event.
-        :return: A company mapping model instance from the quartet_masterdata
-            package.
-        '''
-
-        for event in events:
-            epc_list = getattr(event, 'epc_list', event.epcs)
-            for pattern in urn_patterns:
-                match = pattern.match(epc_list[0])
-                if match:
-                    self.info('Found a matching urn...%s', epc_list[0])
-                    fields = match.groupdict()
-                    company_prefix = fields['company_prefix']
-                    self.info('Using company prefix %s', company_prefix)
-                    try:
-                        Company.objects.get(gs1_company_prefix=company_prefix)
-                    except Company.DoesNotExist:
-                        raise self.CompanyConfigurationError(
-                            'The company with gs1 company prefix %s does not'
-                            ' exist in the database.  Please conifgure this '
-                            'company along with an outbound mapping for this '
-                            'step to function correctly.' % company_prefix
-                        )
-
-    class CompanyConfigurationError(Exception):
-        pass
-
-    def process_events(self, events: list):
-        self.get_mapping(events)
-        return super().process_events(events)

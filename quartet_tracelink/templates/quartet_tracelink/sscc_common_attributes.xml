@@ -1,0 +1,5 @@
+<tl:packagingLevel>PL</tl:packagingLevel>
+<tl:commonAttributes>
+    <tl:productionLineId>{{ event.packaging_line }}</tl:productionLineId>
+    <tl:companyPrefix>{{ event.company_prefix }}</tl:companyPrefix>
+</tl:commonAttributes>

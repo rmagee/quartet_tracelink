@@ -17,3 +17,5 @@ from quartet_tracelink.steps.steps import AddCommissioningDataStep, \
     OutputParsingStep, TracelinkOutputStep, TracelinkFilteredEventOutputStep
 from quartet_tracelink.steps.mapping_step import \
     TradingPartnerMappingOutputStep
+from quartet_tracelink.steps.output_step import \
+    TraceLinkCommonAttributesOutputStep

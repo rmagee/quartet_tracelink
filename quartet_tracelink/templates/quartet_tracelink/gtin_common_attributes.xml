@@ -1,0 +1,9 @@
+<tl:packagingLevel>{{ event.packaging_uom }}</tl:packagingLevel>
+<tl:commonAttributes>
+<tl:productionLineId>{{ event.packaging_line }}</tl:productionLineId>
+<tl:itemDetail>
+    <tl:lot>{{ event.lot }}</tl:lot>
+    <tl:expiry>{{ event.expiry }}</tl:expiry>
+    <tl:countryDrugCode type="{{event.NDC_pattern}}">{{ event.NDC }}</tl:countryDrugCode>
+</tl:itemDetail>
+</tl:commonAttributes>

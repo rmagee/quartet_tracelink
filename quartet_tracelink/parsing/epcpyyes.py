@@ -61,3 +61,4 @@ class ObjectEvent(template_events.ObjectEvent):
                          source_list, destination_list,
                          business_transaction_list, ilmd, quantity_list, env,
                          template, render_xml_declaration)
+

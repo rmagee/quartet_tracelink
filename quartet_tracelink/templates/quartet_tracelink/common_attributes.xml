@@ -13,12 +13,10 @@
     {% if additional_context and event.biz_step and 'shipping' in event.biz_step %}
         {% include "quartet_tracelink/shipping_event_extension.xml" %}
     {% else %}
-        <tl:commonAttributes>
-            <tl:itemDetail>
-                <tl:lot>{{ event.ilmd.0.value }}</tl:lot>
-                <tl:expiry>{{ event.ilmd.1.value }}</tl:expiry>
-                <tl:countryDrugCode type="US_NDC532">XXXXX-XXX-XX</tl:countryDrugCode>
-            </tl:itemDetail>
-        </tl:commonAttributes>
+        {% if event.is_gtin == True %}
+            {% include "quartet_tracelink/gtin_common_attributes.xml" %}
+        {% else %}
+            {% include "quartet_tracelink/sscc_common_attributes.xml" %}
+        {% endif %}
     {% endif %}
 </ObjectEvent>

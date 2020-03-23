@@ -74,34 +74,3 @@ class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
         self.get_mapping(events)
         return super().process_events(events)
 
-    def generate_sbdh(self, header_version='1.0', sender_sgln=None,
-                      receiver_sgln=None, doc_id_standard='EPCGlobal',
-                      doc_id_type_version='1.0',
-                      doc_id_instance_identifier=None, doc_id_type='Events',
-                      creation_date_and_time=None):
-        '''
-        Slap in an SBDH.
-        '''
-        sender = sbdh.Partner(
-            sbdh.PartnerType.SENDER,
-            sbdh.PartnerIdentification(
-                'GLN',
-                self.mapping.company.GLN13)
-        )
-        receiver = sbdh.Partner(
-            sbdh.PartnerType.RECEIVER,
-            sbdh.PartnerIdentification(
-                'GLN',
-                self.mapping.to_business.GLN13)
-        )
-        partner_list = [sender, receiver]
-        creation_date_and_time = creation_date_and_time or datetime.utcnow().isoformat()
-        creation_date_and_time = self.format_datetime(
-            creation_date_and_time)
-        document_identification = sbdh.DocumentIdentification(
-            creation_date_and_time=creation_date_and_time
-        )
-        return sbdh.StandardBusinessDocumentHeader(
-            document_identification=document_identification,
-            partners=partner_list
-        )

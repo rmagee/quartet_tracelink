@@ -15,22 +15,24 @@
 import os
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 from EPCPyYes.core.v1_2.CBV.business_steps import BusinessSteps
 from EPCPyYes.core.v1_2.CBV.dispositions import Disposition
 from EPCPyYes.core.v1_2.events import EventType
 from quartet_capture.models import Rule, Step, StepParameter, Task
-from quartet_capture.tasks import execute_rule, execute_queued_task
+from quartet_capture.tasks import execute_rule, execute_queued_task, \
+    create_and_queue_task
 from quartet_epcis.parsing.business_parser import BusinessEPCISParser
-from quartet_masterdata.models import Company
+from quartet_masterdata.models import Company, TradeItem, OutboundMapping, \
+    Location
 from quartet_output import models
 from quartet_output.models import EPCISOutputCriteria
 from quartet_output.steps import SimpleOutputParser, ContextKeys
 from quartet_templates.models import Template
 
 
-class TestRules(TestCase):
+class TestRules(TransactionTestCase):
 
     def test_rule_with_agg_comm(self):
         self._create_good_ouput_criterion()
@@ -127,23 +129,87 @@ class TestRules(TestCase):
             task = Task.objects.get(name=task_name)
             self.assertEqual(task.status, 'FINISHED')
 
+    def _create_trade_item(self, company):
+        TradeItem.objects.create(
+            GTIN14='00355555594154',
+            regulated_product_name='Sleepitoff',
+            NDC='55555-594-15',
+            NDC_pattern='5-3-2',
+            package_uom='Ea',
+            company=company
+        )
+        TradeItem.objects.create(
+            GTIN14='60355555594156',
+            regulated_product_name='Sleepitoff',
+            NDC='55555-594-15',
+            NDC_pattern='5-3-2',
+            package_uom='Bdl',
+            company=company
+        )
+
+    def _create_outbound_mapping(self):
+        company = Company.objects.get(
+            gs1_company_prefix='0355555'
+        )
+        ship_from_co = Company.objects.get(
+            gs1_company_prefix='0651991'
+        )
+        ship_from_location = Location.objects.get(
+            GLN13='0962056000006'
+        )
+        ship_to_co = Company.objects.get(
+            gs1_company_prefix='0967914'
+        )
+        ship_to_location = Location.objects.get(
+            GLN13='0967914000201'
+        )
+        OutboundMapping.objects.create(
+            company=company,
+            from_business=ship_from_co,
+            ship_from=ship_from_location,
+            to_business=ship_to_co,
+            ship_to=ship_to_location
+        )
+
+    def _create_mapping_output_step(self, rule, criteria_name='Test Criteria'):
+        self._create_outbound_mapping()
+        step = Step()
+        step.rule = rule
+        step.order = 11
+        step.name = 'Output Determination'
+        step.step_class = 'quartet_tracelink.steps.TradingPartnerMappingOutputStep'
+        step.description = 'unit test step'
+        step.save()
+        step_parameter = StepParameter()
+        step_parameter.step = step
+        step_parameter.name = 'EPCIS Output Criteria'
+        step_parameter.value = criteria_name
+        step_parameter.save()
+        self.render_step = step
+        return step
+
     def test_rule_with_agg_comm_sftp_output_with_company_match(self):
+        self.import_trading_partners()
         self.create_company_masterdata()
         self._create_bitter_waterfall_criterion()
         db_rule = self._create_rule()
         self._create_step(db_rule)
         self._create_output_steps(db_rule)
         self._create_comm_step(db_rule)
-        self._create_tracelink_epcpyyes_step_2(db_rule)
-        self._create_output_company()
+        self._create_tracelink_epcpyyes_step_2(db_rule, append_events='False')
+        self._create_trade_item(self._create_output_company())
         self._create_task_step(db_rule)
+        self._create_step(db_rule, order=10, skip_parsing='True')
+        self._create_mapping_output_step(db_rule)
         db_rule2 = self._create_transport_rule()
         self._create_transport_step(db_rule2)
         db_task = self._create_task(db_rule)
         curpath = os.path.dirname(__file__)
         # prepopulate the db
-        self._parse_test_data('data/bitter-waterfall.xml')
-        data_path = os.path.join(curpath, 'data/bitter-waterfall-ship.xml')
+        lot_path = os.path.join(curpath, 'data/optel-data-obj.xml')
+        with open(lot_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task)
+        data_path = os.path.join(curpath, 'data/optel-data-obj-ship.xml')
         with open(data_path, 'r') as data_file:
             context = execute_rule(data_file.read().encode(), db_task)
             task_name = context.context[ContextKeys.CREATED_TASK_NAME_KEY]
@@ -251,7 +317,6 @@ class TestRules(TestCase):
         eoc.action = "OBSERVE"
         eoc.disposition = Disposition.in_transit.value
         eoc.biz_step = BusinessSteps.shipping.value
-        eoc.destination_id = 'urn:epc:id:sgln:2014121.60010.0'
         eoc.authentication_info = auth
         eoc.end_point = endpoint
         eoc.save()
@@ -290,9 +355,9 @@ class TestRules(TestCase):
     def create_company_masterdata(self):
         company = Company()
         company.name = "Test Company"
-        company.SGLN = 'urn:epc:id:sgln:2014121.60010.0'
-        company.GLN13 = '2014121600101'
-        company.company_prefix = '2014121'
+        company.SGLN = 'urn:epc:id:sgln:0355555.60010.0'
+        company.GLN13 = '0355555000306'
+        company.company_prefix = '0355555'
         company.save()
 
     def _create_bad_criterion(self):
@@ -349,10 +414,11 @@ class TestRules(TestCase):
         step_parameter.value = put_data
         step_parameter.save()
 
-    def _create_step(self, rule, criteria_name='Test Criteria'):
+    def _create_step(self, rule, criteria_name='Test Criteria',
+                     append_events='True', order=1, skip_parsing='False'):
         step = Step()
         step.rule = rule
-        step.order = 1
+        step.order = order
         step.name = 'Output Determination'
         step.step_class = 'quartet_tracelink.steps.OutputParsingStep'
         step.description = 'unit test step'
@@ -364,8 +430,8 @@ class TestRules(TestCase):
         step_parameter.save()
         StepParameter.objects.create(
             step=step,
-            name='Sender GLN',
-            value='1234567890123'
+            name='Skip Parsing',
+            value=skip_parsing
         )
         return step
 
@@ -397,7 +463,8 @@ class TestRules(TestCase):
                            'context.'
         step.save()
 
-    def _create_tracelink_epcpyyes_step(self, rule, use_template=True):
+    def _create_tracelink_epcpyyes_step(self, rule, use_template=True,
+                                        append_events='True'):
         step = Step()
         step.rule = rule
         step.order = 4
@@ -412,19 +479,39 @@ class TestRules(TestCase):
                 value='unit test template',
                 step=step
             )
+        StepParameter.objects.create(
+            step=step,
+            name='Append Filtered Events',
+            value=append_events
+        )
 
-    def _create_tracelink_epcpyyes_step_2(self, rule):
+    def _create_tracelink_epcpyyes_step_2(self, rule, append_events='True'):
         step = Step()
         step.rule = rule
         step.order = 4
         step.name = 'Create EPCIS'
-        step.step_class = 'quartet_tracelink.steps.TracelinkOutputStep'
+        step.step_class = 'quartet_tracelink.steps.TraceLinkCommonAttributesOutputStep'
         step.description = 'Creates EPCIS XML or JSON and inserts into rule' \
                            'context.'
         step.save()
+        StepParameter.objects.create(
+            step=step,
+            name='Object Event Template',
+            value='quartet_tracelink/common_attributes.xml'
+        )
+        StepParameter.objects.create(
+            step=step,
+            name='Append Filtered Events',
+            value=append_events
+        )
+        StepParameter.objects.create(
+            step=step,
+            name='Sender GLN',
+            value='1234567890123'
+        )
 
     def _create_output_company(self):
-        Company.objects.create(
+        return Company.objects.create(
             name='testsmella',
             gs1_company_prefix='0349884',
             GLN13='0342192777777'
@@ -509,3 +596,34 @@ class TestRules(TestCase):
         print(parser.event_cache)
         parser.clear_cache()
         return message_id, parser
+
+    def create_tradingpartner_rule(self):
+        rule = Rule.objects.create(
+            name='Trading Partner Import',
+            description='unit test rule'
+        )
+        step = Step.objects.create(
+            name='Parse data',
+            step_class='quartet_integrations.oracle.steps.TradingPartnerImportStep',
+            description='unit test step',
+            order=1,
+            rule=rule
+        )
+
+    def import_trading_partners(self):
+        self.create_tradingpartner_rule()
+        curpath = os.path.dirname(__file__)
+        file_path = os.path.join(curpath, 'data/company_mappings.csv')
+
+        with open(file_path, "rb") as f:
+            create_and_queue_task(
+                data=f.read(),
+                rule_name="Trading Partner Import",
+                run_immediately=True
+            )
+        self.assertEqual(
+            Company.objects.all().count(), 40
+        )
+        self.assertEqual(
+            Location.objects.all().count(), 42
+        )

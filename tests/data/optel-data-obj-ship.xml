@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<epcis:EPCISDocument schemaVersion="1.0" creationDate="2020-03-06T18:32:49.408Z" xmlns:gs1ushc="http://epcis.gs1us.org/hc/ns" xmlns:epcis="urn:epcglobal:epcis:xsd:1">
+    <EPCISBody>
+        <EventList>
+            <ObjectEvent>
+                <eventTime>2020-03-06T18:32:24.994Z</eventTime>
+                <eventTimeZoneOffset>-06:00</eventTimeZoneOffset>
+                <epcList>
+                    <epc>urn:epc:id:sgtin:0355555.659415.8496</epc>
+                </epcList>
+                <action>OBSERVE</action>
+                <bizStep>urn:epcglobal:cbv:bizstep:shipping</bizStep>
+                <disposition>urn:epcglobal:cbv:disp:in_transit</disposition>
+                <readPoint>
+                    <id>urn:epc:id:sgln:0355555.0.1</id>
+                </readPoint>
+                <bizLocation>
+                    <id>urn:epc:id:sgln:0355555.0.0</id>
+                </bizLocation>
+                <bizTransactionList>
+                    <bizTransaction type="urn:epcglobal:cbv:btt:desadv">urn:epcglobal:cbv:bt:0355555:2958922</bizTransaction>
+                </bizTransactionList>
+                <gs1ushc:transferredById type="SGLN">urn:epc:id:sgln:0355555.0.0</gs1ushc:transferredById>
+                <gs1ushc:transferredToId type="GLN">0355555000306</gs1ushc:transferredToId>
+                <gs1ushc:eventID>d33f7756-5fd8-11ea-822b-525400998437</gs1ushc:eventID>
+            </ObjectEvent>
+        </EventList>
+    </EPCISBody>
+</epcis:EPCISDocument>
