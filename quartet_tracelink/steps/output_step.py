@@ -31,7 +31,8 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
         self.lot = None
         self.expiry = None
         self.trade_items = {}
-        self.uom_choices = {'Bdl': 'PK', 'Cs': 'CA', 'Ea': 'EA', 'Bx': 'EA'}
+        self.uom_choices = {'Bdl': 'PK', 'Cs': 'CA', 'Ea': 'EA', 'Bx': 'EA',
+                            'EA': 'EA'}
         self.packaging_line = None
         self.NDC_pattern = None
         self.object_event_template = 'quartet_tracelink/common_attributes.xml'
