@@ -17,6 +17,7 @@ from datetime import datetime
 from EPCPyYes.core.SBDH import sbdh
 from gs123.regex import urn_patterns
 from quartet_capture import models
+from quartet_capture.rules import RuleContext
 from quartet_masterdata.models import OutboundMapping
 from quartet_tracelink.steps import TracelinkFilteredEventOutputStep
 
@@ -26,6 +27,7 @@ class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
     def __init__(self, db_task: models.Task, **kwargs):
         super().__init__(db_task, **kwargs)
         self.mapping = None
+        self.rule_context = None
 
     def get_mapping(self, filtered_events):
         '''
@@ -73,4 +75,23 @@ class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
     def process_events(self, events: list):
         self.get_mapping(events)
         return super().process_events(events)
+
+    def generate_sbdh(self, header_version='1.0', sender_sgln=None,
+                      receiver_sgln=None, doc_id_standard='EPCGlobal',
+                      doc_id_type_version='1.0',
+                      doc_id_instance_identifier=None, doc_id_type='Events',
+                      creation_date_and_time=None, sender_gln=None,
+                      receiver_gln=None):
+        sender_gln = self.rule_context.context.get('SENDER_GLN')
+        receiver_gln = self.rule_context.context.get('RECEIVER_GLN')
+        if sender_gln and receiver_gln:
+            return super().generate_sbdh(header_version, sender_sgln,
+                                         receiver_sgln, doc_id_standard,
+                                         doc_id_type_version,
+                                         doc_id_instance_identifier, doc_id_type,
+                                         creation_date_and_time, sender_gln,
+                                         receiver_gln)
+
+    def pre_execute(self, rule_context: RuleContext):
+        self.rule_context = rule_context
 
