@@ -12,6 +12,7 @@ django
 quartet_output
 quartet_masterdata
 quartet_templates
+quartet_integrations
 quartet_capture
 quartet_epcis
 EPCPyYes
