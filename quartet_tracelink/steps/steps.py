@@ -104,6 +104,11 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             'quartet_tracelink/disposition_assigned.xml',
             'The template to use when rendering '
             'object events.')
+        self.parse_utc_dates = self.get_or_create_parameter(
+            'Parse UTC Dates', 'True', 'Whether or not to parse dates as '
+                                       'UTC for tracelink.'
+        )
+        self.parse_utc_dates = self.parse_utc_dates in ['True', 'true']
 
     def get_gln_from_company(self, sgln):
         '''
@@ -183,7 +188,10 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
     def format_datetime(self, dt_string, increment_dates=False,
                         increment_val=0):
         try:
-            dt_obj = parser.parse(dt_string).astimezone(timezone('UTC'))
+            if self.parse_utc_dates:
+                dt_obj = parser.parse(dt_string).astimezone(timezone('UTC'))
+            else:
+                dt_obj = parser.parse(dt_string)
             if increment_dates:
                 dt_obj = dt_obj + timedelta(seconds=increment_val)
             return dt_obj.strftime('%Y-%m-%dT%H:%M:%SZ')
