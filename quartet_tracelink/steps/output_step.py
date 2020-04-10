@@ -21,7 +21,7 @@ from quartet_masterdata.db import DBProxy
 from quartet_masterdata.models import Company
 from quartet_output.steps import ContextKeys
 from quartet_tracelink.steps import TracelinkOutputStep
-
+from quartet_epcis.models import Entry
 
 class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
 
@@ -37,6 +37,7 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
         self.NDC_pattern = None
         self.object_event_template = 'quartet_tracelink/common_attributes.xml'
         self.have_checked_company = False
+        self.last_trade_item = None
 
     def pre_execute(self, rule_context: RuleContext):
         # get the filtered events
@@ -109,10 +110,15 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
                 epcis_event.NDC = trade_item.NDC
                 epcis_event.NDC_pattern = self.get_ndc_string(
                     trade_item.NDC_pattern)
+                self.last_trade_item = trade_item
         if 'sscc' in urn:
+            entry = Entry.objects.get(identifier=urn)
             epcis_event.company_prefix = URNConverter(urn).company_prefix
-            epcis_event.packaging_uom = 'PL'
-            epcis_event.is_gtin = False
+            epcis_event.packaging_uom = 'PL' if not entry.parent_id else 'CA'
+            if self.last_trade_item:
+                epcis_event.NDC_pattern = self.last_trade_item.NDC_pattern
+                epcis_event.NDC = self.last_trade_item.NDC
+            epcis_event.is_gtin = False if not entry.parent_id else True
 
     def get_uom(self, uom: str):
         ret = self.uom_choices.get(uom)
