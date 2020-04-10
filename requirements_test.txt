@@ -15,6 +15,7 @@ quartet_templates
 quartet_integrations
 quartet_capture
 quartet_epcis
+random_flavorpack
 EPCPyYes
 serialbox
 gs123
