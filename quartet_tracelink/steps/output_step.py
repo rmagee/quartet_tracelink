@@ -114,7 +114,12 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
         if 'sscc' in urn:
             entry = Entry.objects.get(identifier=urn)
             epcis_event.company_prefix = URNConverter(urn).company_prefix
-            epcis_event.packaging_uom = 'PL' if not entry.parent_id else 'CA'
+            if not entry.parent_id:
+                epcis_event.packaging_uom = 'PL'
+            elif 'gtin' in entry.parent_id.identifier:
+                epcis_event.packaging_uom = 'PK'
+            elif 'sscc' in entry.parent_id.identifier:
+                epcis_event.packaging_uom = 'CA'
             if self.last_trade_item:
                 epcis_event.NDC_pattern = self.last_trade_item.NDC_pattern
                 epcis_event.NDC = self.last_trade_item.NDC
