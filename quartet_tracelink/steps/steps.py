@@ -109,6 +109,9 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                                        'UTC for tracelink.'
         )
         self.parse_utc_dates = self.parse_utc_dates in ['True', 'true']
+        self.convert_date_strings = self.get_boolean_parameter(
+            'Convert Dates', False
+        )
 
     def get_gln_from_company(self, sgln):
         '''
@@ -244,7 +247,8 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                     break
             for event in all_events:
                 # tracelink is terrible at handling ISO dates so here we go...
-                # self.convert_dates(event, increment_dates, increment_val)
+                if self.convert_date_strings:
+                    self.convert_dates(event, increment_dates, increment_val)
                 if isinstance(event, template_events.ObjectEvent):
                     gtin14 = self._get_gtin(event)
                     if gtin14:
@@ -379,8 +383,9 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
                 sender_sgln=source,
                 receiver_sgln=dest
             )
-            # for event in filtered_events:
-            #     self.convert_dates(event)
+            if self.convert_date_strings:
+                for event in filtered_events:
+                    self.convert_dates(event)
             epcis_document = template_events.EPCISEventListDocument(
                 filtered_events,
                 sbdh,
