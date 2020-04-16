@@ -156,6 +156,7 @@ class TraceLinkEPCISCommonAttributesParser(TraceLinkEPCISParser):
             epcis_event.company_prefix = URNConverter(urn).company_prefix
             epcis_event.packaging_uom = 'PL'
             epcis_event.is_gtin = False
+            epcis_event.NDC_pattern = self.NDC_pattern
 
     def get_uom(self, uom: str):
         ret = self.uom_choices.get(uom)

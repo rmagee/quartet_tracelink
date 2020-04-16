@@ -343,7 +343,7 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 return result.gtin14
 
     def declared_parameters(self):
-        ret = super().declared_parameters()
+        ret = super().declared_parameters
         ret['Template Name'] = 'Jinja 2 template path to override.  Not the ' \
                                'name of a qu4rtet template.'
         return ret
