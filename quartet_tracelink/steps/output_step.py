@@ -115,13 +115,16 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
             entry = Entry.objects.get(identifier=urn)
             epcis_event.company_prefix = URNConverter(urn).company_prefix
             if not entry.parent_id:
+                # if there is an sscc and there is no parent it is a pallet
                 epcis_event.packaging_uom = 'PL'
-            elif 'gtin' in entry.parent_id.identifier:
-                epcis_event.packaging_uom = 'PK'
-            elif 'sscc' in entry.parent_id.identifier:
+            elif 'sscc' in entry.parent_id.identifier and not entry.parent_id.parent_id:
+                # if there is an sscc and the parent has no parent it is a case
                 epcis_event.packaging_uom = 'CA'
+            else:
+                # if there is an sscc and the parent has a parent it is a pack
+                epcis_event.packaging_uom = 'PK'
             if self.last_trade_item:
-                epcis_event.NDC_pattern = self.last_trade_item.NDC_pattern
+                epcis_event.NDC_pattern = self.NDC_pattern
                 epcis_event.NDC = self.last_trade_item.NDC
             epcis_event.is_gtin = False if not entry.parent_id else True
 
@@ -167,6 +170,8 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
             'Sender GLN',
             raise_exception=True
         )
+
+
 
     class UOMNotFoundError(Exception):
         pass
