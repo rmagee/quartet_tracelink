@@ -14,7 +14,7 @@
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 import os
 
-__version__ = '1.0.25'
+__version__ = '1.0.26'
 
 TEMPLATES_PATH = os.path.join(os.path.dirname(__file__),
                               'templates/quartet_tracelink')
