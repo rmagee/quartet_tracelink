@@ -79,43 +79,6 @@ class TestOutputMappings(TransactionTestCase):
                 run_immediately=True
             )
 
-    def test_dynamic_template(self):
-        StepParameter.objects.create(
-            name='Template',
-            value='unit test template',
-            step=self.render_step
-        )
-        curpath = os.path.dirname(__file__)
-        file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
-
-        with open(file_path, "rb") as f:
-            rule = Rule.objects.get(name='test rule')
-            db_task = Task.objects.create(
-                rule=rule
-            )
-            context = execute_rule(f.read(), db_task)
-            self.assertTrue('<tl:businessId type="GLN">0651991000000'
-                            '</tl:businessId>' in
-                            context.context['OUTBOUND_EPCIS_MESSAGE'])
-            self.assertTrue('<tl:fromBusiness>' in
-                            context.context['OUTBOUND_EPCIS_MESSAGE'])
-
-    def test_outbound_mapping(self):
-        curpath = os.path.dirname(__file__)
-        file_path = os.path.join(curpath, 'data/mapping_shipping.xml')
-
-        with open(file_path, "rb") as f:
-            rule = Rule.objects.get(name='test rule')
-            db_task = Task.objects.create(
-                rule=rule
-            )
-            context = execute_rule(f.read(), db_task)
-            self.assertTrue('<tl:businessId type="GLN">0651991000000'
-                            '</tl:businessId>' in
-                            context.context['OUTBOUND_EPCIS_MESSAGE'])
-            self.assertTrue('<tl:fromBusiness>' in
-                            context.context['OUTBOUND_EPCIS_MESSAGE'])
-
     def create_outbound_mapping(self):
         company = Company.objects.get(
             gs1_company_prefix='0952696'

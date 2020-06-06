@@ -102,33 +102,6 @@ class TestRules(TransactionTestCase):
             task = Task.objects.get(name=task_name)
             self.assertEqual(task.status, 'FINISHED')
 
-    def test_rule_with_agg_comm_sftp_output(self):
-        self._create_destination_criterion()
-        db_rule = self._create_rule()
-        self._create_step(db_rule)
-        self._create_output_steps(db_rule)
-        self._create_comm_step(db_rule)
-        self._create_tracelink_epcpyyes_step(db_rule)
-        self._create_task_step(db_rule)
-        db_rule2 = self._create_transport_rule()
-        self._create_transport_step(db_rule2)
-        db_task = self._create_task(db_rule)
-        curpath = os.path.dirname(__file__)
-        # prepopulate the db
-        self._parse_test_data('data/1-b.xml')
-        data_path = os.path.join(curpath, 'data/2-b.xml')
-        with open(data_path, 'r') as data_file:
-            context = execute_rule(data_file.read().encode(), db_task)
-            # self.assertEqual(
-            #     len(context.context[ContextKeys.AGGREGATION_EVENTS_KEY.value]),
-            #     78,
-            #     "There should be 78 events."
-            # )
-            task_name = context.context[ContextKeys.CREATED_TASK_NAME_KEY]
-            execute_queued_task(task_name=task_name)
-            task = Task.objects.get(name=task_name)
-            self.assertEqual(task.status, 'FINISHED')
-
     def _create_trade_item(self, company):
         TradeItem.objects.create(
             GTIN14='00355555594154',
@@ -187,35 +160,6 @@ class TestRules(TransactionTestCase):
         step_parameter.save()
         self.render_step = step
         return step
-
-    def test_rule_with_agg_comm_sftp_output_with_company_match(self):
-        self.import_trading_partners()
-        self.create_company_masterdata()
-        self._create_bitter_waterfall_criterion()
-        db_rule = self._create_rule()
-        self._create_step(db_rule)
-        self._create_output_steps(db_rule)
-        self._create_comm_step(db_rule)
-        self._create_tracelink_epcpyyes_step_2(db_rule, append_events='False')
-        self._create_trade_item(self._create_output_company())
-        self._create_task_step(db_rule)
-        self._create_step(db_rule, order=10, skip_parsing='True')
-        self._create_mapping_output_step(db_rule)
-        db_rule2 = self._create_transport_rule()
-        self._create_transport_step(db_rule2)
-        db_task = self._create_task(db_rule)
-        curpath = os.path.dirname(__file__)
-        # prepopulate the db
-        lot_path = os.path.join(curpath, 'data/optel-data-obj.xml')
-        with open(lot_path, 'r') as data_file:
-            context = execute_rule(data_file.read().encode(), db_task)
-        data_path = os.path.join(curpath, 'data/optel-data-obj-ship.xml')
-        with open(data_path, 'r') as data_file:
-            context = execute_rule(data_file.read().encode(), db_task)
-            task_name = context.context[ContextKeys.CREATED_TASK_NAME_KEY]
-            execute_queued_task(task_name=task_name)
-            task = Task.objects.get(name=task_name)
-            self.assertEqual(task.status, 'FINISHED')
 
     def _create_destination_criterion(self):
         endpoint = self._create_sftp_endpoint()
