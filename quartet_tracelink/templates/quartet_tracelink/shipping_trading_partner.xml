@@ -20,7 +20,11 @@
     <tl:shipFromLocation>
     {% with ship_from = mapping.ship_from %}
         <tl:facilityId type="GLN">{{ ship_from.GLN13 }}</tl:facilityId>
-        <tl:facilityId type="SGLN">{{ ship_from.SGLN }}</tl:facilityId>
+        {% if ship_from.SGLN.startswith('urn:epc:id:sgln:') %}
+            <tl:facilityId type="SGLN">{{ ship_from.SGLN[16:]}}</tl:facilityId>
+        {% else %}
+            <tl:facilityId type="SGLN">{{ ship_from.SGLN }}</tl:facilityId>
+        {% endif %}
         <tl:address>
             <tl:businessName>{{ ship_from.name }}</tl:businessName>
             <tl:street1>{{ ship_from.address1 }}</tl:street1>
@@ -57,7 +61,11 @@
     <tl:shipToLocation>
     {% with ship_to = mapping.ship_to %}
         <tl:facilityId type="GLN">{{ ship_to.GLN13 }}</tl:facilityId>
+        {% if ship_to.SGLN.startswith('urn:epc:id:sgln:') %}
+        <tl:facilityId type="SGLN">{{ ship_to.SGLN[16:] }}</tl:facilityId>
+        {% else %}
         <tl:facilityId type="SGLN">{{ ship_to.SGLN }}</tl:facilityId>
+        {% endif %}
         <tl:address>
             <tl:businessName>{{ ship_to.name }}</tl:businessName>
             <tl:street1>{{ ship_to.address1 }}</tl:street1>
