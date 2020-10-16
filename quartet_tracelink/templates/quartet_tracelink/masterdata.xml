@@ -4,6 +4,7 @@
         <VocabularyList>
             <Vocabulary type="urn:epcglobal:epcis:vtype:Location">
                 <VocabularyElementList>
+                {% if additional_context['masterdata'] is mapping %}
                     {% for sgln, dict in additional_context['masterdata'].items() %}
                         <VocabularyElement id="{{ sgln }}">
                             <attribute id="urn:epcglobal:cbv:mda#name">{{ dict['name'] }}</attribute>
@@ -14,6 +15,18 @@
                             <attribute id="urn:epcglobal:cbv:mda#countryCode">{{ dict['country'] }}</attribute>
                         </VocabularyElement>
                     {% endfor %}
+                {% else %}
+                    {% for partner in additional_context['masterdata'] %}
+                        <VocabularyElement id="{{ partner.SGLN }}">
+                            <attribute id="urn:epcglobal:cbv:mda#name">{{ partner.name }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">{{ partner.address1 }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#city">{{ partner.city }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#state">{{ partner.state_province }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#postalCode">{{ partner.postal_code }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#countryCode">{{ partner.country }}</attribute>
+                        </VocabularyElement>
+                    {% endfor %}
+                {% endif %}
                 </VocabularyElementList>
             </Vocabulary>
         </VocabularyList>

@@ -167,11 +167,11 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
         elif sender_gln and receiver_gln:
             sender = sbdh.Partner(
                 sbdh.PartnerType.SENDER,
-                sbdh.PartnerIdentification('GLN', sender_gln)
+                sbdh.PartnerIdentification('GLN', sender_gln.GLN13)
             )
             receiver = sbdh.Partner(
                 sbdh.PartnerType.RECEIVER,
-                sbdh.PartnerIdentification('GLN', receiver_gln)
+                sbdh.PartnerIdentification('GLN', receiver_gln.GLN13)
             )
 
         if sender and receiver:
@@ -379,10 +379,16 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
             self.transform_business_transaction(filtered_events[0])
             dest, source = self.get_sgln_info(filtered_events[0])
             db_records = self.get_partner_info_by_sgln(filtered_events[0])
-            sbdh = self.generate_sbdh(
-                sender_sgln=source,
-                receiver_sgln=dest
-            )
+            if hasattr(self, 'mapping'):
+                sbdh = self.generate_sbdh(
+                    sender_gln=self.mapping.from_business,
+                    receiver_gln=self.mapping.to_business
+                )
+            else:
+                sbdh = self.generate_sbdh(
+                    sender_sgln=source,
+                    receiver_sgln=dest
+                )
             if self.convert_date_strings:
                 for event in filtered_events:
                     self.convert_dates(event)

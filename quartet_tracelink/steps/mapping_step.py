@@ -70,6 +70,11 @@ class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
     def additional_context(self, partner_records):
         additional_context = super().additional_context(partner_records)
         additional_context['outbound_mapping'] = self.mapping
+        if self.mapping:
+            additional_context['masterdata'] = [self.mapping.from_business,
+                                                self.mapping.ship_from,
+                                                self.mapping.to_business,
+                                                self.mapping.ship_to]
         return additional_context
 
     def process_events(self, events: list):
@@ -82,8 +87,8 @@ class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
                       doc_id_instance_identifier=None, doc_id_type='Events',
                       creation_date_and_time=None, sender_gln=None,
                       receiver_gln=None):
-        sender_gln = self.rule_context.context.get('SENDER_GLN')
-        receiver_gln = self.rule_context.context.get('RECEIVER_GLN')
+        sender_gln = sender_gln or self.rule_context.context.get('SENDER_GLN')
+        receiver_gln = receiver_gln or self.rule_context.context.get('RECEIVER_GLN')
         if sender_gln and receiver_gln:
             return super().generate_sbdh(header_version, sender_sgln,
                                          receiver_sgln, doc_id_standard,
