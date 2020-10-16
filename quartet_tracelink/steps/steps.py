@@ -383,7 +383,7 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
             db_records = self.get_partner_info_by_sgln(filtered_events[0])
             if hasattr(self, 'mapping'):
                 sbdh = self.generate_sbdh(
-                    sender_gln=self.mapping.from_business,
+                    sender_gln=self.mapping.ship_from,
                     receiver_gln=self.mapping.to_business
                 )
             else:
