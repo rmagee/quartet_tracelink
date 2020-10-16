@@ -165,13 +165,15 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                                             receiver_sgln))
                                     )
         elif sender_gln and receiver_gln:
+            sender_gln = getattr(sender_gln, 'GLN13', sender_gln)
             sender = sbdh.Partner(
                 sbdh.PartnerType.SENDER,
-                sbdh.PartnerIdentification('GLN', sender_gln.GLN13)
+                sbdh.PartnerIdentification('GLN', sender_gln)
             )
+            receiver_gln = getattr(receiver_gln, 'GLN13', receiver_gln)
             receiver = sbdh.Partner(
                 sbdh.PartnerType.RECEIVER,
-                sbdh.PartnerIdentification('GLN', receiver_gln.GLN13)
+                sbdh.PartnerIdentification('GLN', receiver_gln)
             )
 
         if sender and receiver:
