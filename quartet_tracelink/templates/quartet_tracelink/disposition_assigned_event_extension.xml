@@ -1,0 +1,13 @@
+{% if event.extension_digit %}
+<tl:dispositionAssignedEventExtensions>
+	<tl:packagingLevel>PL</tl:packagingLevel>
+</tl:dispositionAssignedEventExtensions>
+{% else %}
+<tl:dispositionAssignedEventExtensions>
+	<tl:packagingLevel>{{event.packaging_uom}}</tl:packagingLevel>
+	<tl:itemDetail>
+		<tl:packagingItemCode type="GTIN-14">{{event.GTIN14}}</tl:packagingItemCode>
+		<tl:countryDrugCode type="{{event.NDC_pattern}}">{{event.NDC}}</tl:countryDrugCode>
+	</tl:itemDetail>
+</tl:dispositionAssignedEventExtensions>
+{% endif %}

@@ -1,0 +1,18 @@
+<ObjectEvent>
+    {% include "epcis/event_times.xml" %}
+    {% include "epcis/base_extension.xml" %}
+    {% if event.epc_list %}
+        <epcList>
+            {% for epc in event.epc_list %}
+                <epc>{{ epc }}</epc>
+            {% endfor %}
+        </epcList>
+    {% endif %}
+    {% include "epcis/business_data.xml" %}
+    {% if additional_context and event.biz_step and 'shipping' in event.biz_step %}
+        {% include "epcis/extension.xml" %}
+        {% include "quartet_tracelink/shipping_event_extension.xml" %}
+    {% else %}
+        {% include "quartet_tracelink/extension.xml" %}
+    {% endif %}
+</ObjectEvent>

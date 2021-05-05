@@ -13,6 +13,7 @@
 #
 # Copyright 2018 SerialLab Corp.  All rights reserved.
 import re
+from enum import Enum
 from datetime import datetime
 from datetime import timedelta
 from dateutil import parser
@@ -34,6 +35,7 @@ from quartet_output.steps import EPCPyYesOutputStep, ContextKeys
 from quartet_tracelink.parsing.epcpyyes import get_default_environment
 from quartet_tracelink.parsing.parser import TraceLinkEPCISParser, \
     TraceLinkEPCISCommonAttributesParser
+from quartet_masterdata.models import TradeItem, OutboundMapping
 
 sgln_regex = re.compile(r'^urn:epc:id:sgln:(?P<cp>[0-9]+)\.(?P<ref>[0-9]+)')
 
@@ -89,7 +91,7 @@ class OutputParsingStep(steps.OutputParsingStep):
         parser.info_func = self.info
         parser.object_event_template = self.object_event_template
         return self.parser
-
+    
 
 class TracelinkOutputStep(EPCPyYesOutputStep):
     """
@@ -265,13 +267,14 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
                 'RECEIVER_GLN': rule_context.context.get('RECEIVER_GLN'),
                 'SENDER_GLN': rule_context.context.get('SENDER_GLN')
             }
+            additional_context = self.get_additional_context(additional_context)
             if additional_context['RECEIVER_GLN'] and additional_context[
-                'SENDER_GLN']:
+                    'SENDER_GLN']:
                 self.info('Using the values in the context to generate the '
                           'header.')
                 sbdh_out = self.generate_sbdh(
-                    receiver_gln=rule_context.context.get('RECEIVER_GLN'),
-                    sender_gln=rule_context.context.get('SENDER_GLN')
+                    receiver_gln=additional_context.get('RECEIVER_GLN'),
+                    sender_gln=additional_context.get('SENDER_GLN')
                 )
                 self.info('SBDH: %s', sbdh_out)
             self.info('Template path: %s', template_path)
@@ -292,7 +295,7 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
 
     def convert_dates(self, event, increment_dates=False, increment_val=0):
         if event.event_time.endswith(
-            '+00:00') and event.event_timezone_offset != '+00:00':
+                '+00:00') and event.event_timezone_offset != '+00:00':
             converted_dt_string = re.sub(r"\+00:00$",
                                          event.event_timezone_offset,
                                          event.event_time)
@@ -343,6 +346,15 @@ class TracelinkOutputStep(EPCPyYesOutputStep):
             if epc.startswith('urn:epc:id:sgtin:'):
                 result = URNConverter(epc)
                 return result.gtin14
+
+    def get_additional_context(self, context):
+        """
+        Use this method if you want to insert some additional content
+        into the template.\n
+        :param context:\n
+        :return: Will return context dict passed in the arguments.
+        """
+        return context
 
     def declared_parameters(self):
         ret = super().declared_parameters()
@@ -503,4 +515,109 @@ class TracelinkFilteredEventOutputStep(TracelinkOutputStep,
         }
 
     def on_failure(self):
+        pass
+
+
+class CombinedOutputStep(TracelinkOutputStep):
+    """
+    This step creates template for TraceLink's Shipping event - SOM_SHIPMENT.
+    It's called combined because for the scenario it handles commission,
+    aggregation and shipping events are being sent in one EPCIS file.
+    """
+    
+    def __init__(self, db_task: models.Task, **kwargs):
+        super().__init__(db_task, **kwargs)
+        self.mapping = None
+        self.items = []
+        self.packaging_levels = {'EA':'EA', 'CS': 'CA', 'BND': 'PK'}
+
+    def pre_execute(self, rule_context: RuleContext):
+        # Get items from context
+        events = rule_context.context.get(ContextKeys.OBJECT_EVENTS_KEY.value)
+        for oevent in events:
+            self.trade_item_masterdata(oevent)
+        # get GLN's (mappings) from filtered events
+        return self.process_events(
+            rule_context.context.get(
+                ContextKeys.FILTERED_EVENTS_KEY.value, []))
+
+    def get_packaging_level(self, package_uom):
+        return self.packaging_levels.get(package_uom) or package_uom
+
+    def trade_item_masterdata(self, event: template_events.ObjectEvent):
+        epc = event.epc_list[0]
+        if ':sgtin:' in epc:
+            parsed_gtin = URNConverter(epc)
+            event.GTIN14 = parsed_gtin._gtin14
+            # Get prefix and identifier (without 'urn:epc:id:sgln:' and
+            # serial number parts)
+            prefix_and_identifier = epc.split(':')[-1][:14]
+
+            # Get TradeItem instance
+            try:
+                trade_item = TradeItem.objects.get(GTIN14=event.GTIN14)
+            except TradeItem.DoesNotExist:
+                raise self.TradeItemDoesNotExist(
+                    'Trade Item does not exist in the master data'
+                )
+            # Change UOM code if TraceLink requires something else
+            packaging_uom = self.get_packaging_level(trade_item.package_uom)
+            event.packaging_uom = packaging_uom
+            trade_item.package_uom = packaging_uom
+            item = (prefix_and_identifier, trade_item)
+            # Add GTIN info to the items list
+            if item not in self.items:
+                self.items.append(item)
+
+    def process_events(self, events):
+        self.get_mapping(events)
+        return super().process_events(events)
+
+    def get_mapping(self, filtered_events):
+        for event in filtered_events:
+            if self.mapping:
+                break
+            epc_list = getattr(event, 'epc_list')
+            if not epc_list:
+                epc_list = getattr(event, 'epcs')
+            for pattern in urn_patterns:
+                match = pattern.match(epc_list[0])
+                if match:
+                    self.info('Found a matching urn...%s', epc_list[0])
+                    fields = match.groupdict()
+                    company_prefix = fields['company_prefix']
+                    self.info('Using company prefix %s', company_prefix)
+                    try:
+                        self.mapping = OutboundMapping.objects.get(
+                            company__gs1_company_prefix=company_prefix)
+                        break
+                    except OutboundMapping.DoesNotExist:
+                        raise self.CompanyConfigurationError(
+                            'The outbound mapping with main company having '
+                            ' gs1 company prefix %s does not'
+                            ' exist in the database.  Please conifgure this '
+                            'company along with an outbound mapping for this '
+                            'step to function correctly.' % company_prefix
+                        )
+
+    def get_items_master_data(self):
+        return self.items
+
+    def get_additional_context(self, context):
+        if self.items:
+            self.info('Found %s trade items. Appending items '
+                      'to the context' % len(self.items))
+            context['trade_items'] = self.get_items_master_data()
+        if self.mapping:
+            self.info('Mapping masterdata found. Appending '
+                      'to the context')
+            context['masterdata'] = [self.mapping.from_business,
+                                     self.mapping.ship_from,
+                                     self.mapping.ship_to]
+            context['SENDER_GLN'] = self.mapping.from_business.GLN13
+            context['RECEIVER_GLN'] = self.mapping.ship_to.GLN13
+        context['transaction_date'] = datetime.utcnow().date().isoformat()
+        return super().get_additional_context(context)
+
+    class TradeItemDoesNotExist(Exception):
         pass
