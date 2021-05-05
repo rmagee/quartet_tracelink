@@ -1,0 +1,55 @@
+{% if additional_context and (additional_context['masterdata'] or additional_context['trade_items']) %}
+<extension>
+    <EPCISMasterData>
+        <VocabularyList>
+            {% if additional_context['trade_items'] %}
+                <Vocabulary type="urn:epcglobal:epcis:vtype:EPCClass">
+                    <VocabularyElementList>
+                    {% for sgtin, item in additional_context['trade_items'] %}
+                            <VocabularyElement id="urn:epc:idpat:sgtin:{{sgtin}}.*">
+                                <attribute id="http://epcis.tracelink.com/mda/packageTypeCode">{{item.package_uom}}</attribute>
+                                <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentification">{{item.NDC_11_digit.split('-')|join('')}}</attribute>
+                                <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode">NDC{{item.NDC_11_format[::2]}}</attribute>
+                                <attribute id="urn:epcglobal:cbv:mda#regulatedProductName">{{item.regulated_product_name}}</attribute>
+                                <attribute id="urn:epcglobal:cbv:mda#dosageFormType">{{item.dosage_form_type}}</attribute>
+                                <attribute id="urn:epcglobal:cbv:mda#strengthDescription">{{item.strength_description}}</attribute>
+                                <attribute id="urn:epcglobal:cbv:mda#netContentDescription">{{item.net_content_description}}</attribute>
+                            </VocabularyElement>
+                    {% endfor %}
+                    </VocabularyElementList>
+                </Vocabulary>
+            {% endif %}
+            {% if additional_context['masterdata']%}
+            <Vocabulary type="urn:epcglobal:epcis:vtype:Location">
+                <VocabularyElementList>
+                {% if additional_context['masterdata'] is mapping %}
+                    {% for sgln, dict in additional_context['masterdata'].items() %}
+                        <VocabularyElement id="{{ sgln }}">
+                            <attribute id="urn:epcglobal:cbv:mda#name">{{ dict['name'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">{{ dict['address1'] }}</attribute>
+                            {% if dict['address2'] %}<attribute id="urn:epcglobal:cbv:mda#streetAddressTwo">{{ dict['address2'] }}</attribute>{% endif %}
+                            <attribute id="urn:epcglobal:cbv:mda#city">{{ dict['city'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#state">{{ dict['state_province'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#postalCode">{{ dict['postal_code'] }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#countryCode">{{ dict['country'] }}</attribute>
+                        </VocabularyElement>
+                    {% endfor %}
+                {% else %}
+                    {% for partner in additional_context['masterdata'] %}
+                        <VocabularyElement id="{{ partner.SGLN }}">
+                            <attribute id="urn:epcglobal:cbv:mda#name">{{ partner.name }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">{{ partner.address1 }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#city">{{ partner.city }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#state">{{ partner.state_province }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#postalCode">{{ partner.postal_code }}</attribute>
+                            <attribute id="urn:epcglobal:cbv:mda#countryCode">{{ partner.country }}</attribute>
+                        </VocabularyElement>
+                    {% endfor %}
+                {% endif %}
+                </VocabularyElementList>
+            </Vocabulary>
+            {% endif %}
+        </VocabularyList>
+    </EPCISMasterData>
+</extension>
+{% endif %}

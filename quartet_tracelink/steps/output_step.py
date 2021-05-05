@@ -110,6 +110,7 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
                 epcis_event.NDC = trade_item.NDC
                 epcis_event.NDC_pattern = self.get_ndc_string(
                     trade_item.NDC_pattern)
+                epcis_event.GTIN14 = trade_item.GTIN14
                 self.last_trade_item = trade_item
         if 'sscc' in urn:
             entry = Entry.objects.get(identifier=urn)
@@ -170,9 +171,7 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
             'Sender GLN',
             raise_exception=True
         )
-
-
-
+    
     class UOMNotFoundError(Exception):
         pass
 
@@ -181,3 +180,41 @@ class TraceLinkCommonAttributesOutputStep(TracelinkOutputStep):
 
     class CompanyNotFoundError(Exception):
         pass
+
+
+class DispositionAssignedOutputStep(TraceLinkCommonAttributesOutputStep):
+
+    def __init__(self, db_task: models.Task, **kwargs):
+        super().__init__(db_task, **kwargs)
+        self.uom_choices['CS'] = 'CA'
+        self.object_event_template = self.get_parameter(
+            'Template Name',
+            'quartet_tracelink/disposition_assigned_extended.xml',
+            'Template used to render object events' )
+
+    def pre_execute(self, rule_context: RuleContext):
+        self.rule_context = rule_context
+        events = rule_context.context.get(ContextKeys.OBJECT_EVENTS_KEY.value,
+                                          [])
+        super().pre_execute(rule_context)
+    
+    
+    def get_additional_context(self, context):
+        context = super().get_additional_context(context)
+        sender_gln = self.rule_context.context.get('SENDER_GLN')
+        receiver_gln = self.rule_context.context.get('RECEIVER_GLN')
+        if sender_gln and receiver_gln:
+            context['SENDER_GLN'] = sender_gln
+            context['RECEIVER_GLN'] = receiver_gln
+        return context
+    
+    def get_receiver_gln(self, epcis_event: template_events.ObjectEvent,
+                         rule_context: RuleContext):
+        receiver_gln = self.rule_context.context.get('RECEIVER_GLN')
+        if not receiver_gln:
+            super().get_receiver_gln(epcis_event, rule_context)
+
+    def get_sender_gln(self, rule_context):
+        sender_gln = self.rule_context.context.get('SENDER_GLN')
+        if not sender_gln:
+            super().get_sender_gln(rule_context)

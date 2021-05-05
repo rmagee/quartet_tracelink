@@ -1,0 +1,16 @@
+<ilmd>
+    {% for attribute in ilmd %}
+        {% if 'commissionEventExtensions' in attribute.name %}
+            {% if event.GTIN14 %}
+            <tl:commissionEventExtensions>
+              <tl:packagingItemCode type="GTIN-14">{{event.GTIN14}}</tl:packagingItemCode>
+              <tl:packagingLevel>{{event.packaging_uom}}</tl:packagingLevel>
+            </tl:commissionEventExtensions>
+            {% endif %}
+        {% elif 'CBV' in attribute.__module__ %}
+            <cbvmd:{{ attribute.name.value or attribute.name }}>{{ attribute.value }}</cbvmd:{{ attribute.name.value or attribute.name }}>
+        {% else %}
+            <{{ attribute.name }}>{{ attribute.value }}</{{ attribute.name }}>
+        {% endif %}
+    {% endfor %}
+</ilmd>

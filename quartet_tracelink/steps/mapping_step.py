@@ -20,6 +20,7 @@ from quartet_capture import models
 from quartet_capture.rules import RuleContext
 from quartet_masterdata.models import OutboundMapping
 from quartet_tracelink.steps import TracelinkFilteredEventOutputStep
+from quartet_integrations.optel.steps import ContextKeys
 
 
 class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
@@ -100,3 +101,36 @@ class TradingPartnerMappingOutputStep(TracelinkFilteredEventOutputStep):
     def pre_execute(self, rule_context: RuleContext):
         self.rule_context = rule_context
 
+
+class ShippingEventMappingOutputStep(TradingPartnerMappingOutputStep):
+
+    def get_mapping(self, filtered_events):
+        '''
+        Will look for trading partner mappings by searching the rule context
+        for Outbound Mapping context key.
+        :param urns: The urns in the current filtered event.
+        :return: A company mapping model instance from the quartet_masterdata
+            package.
+        '''
+
+        self.mapping = self.rule_context.context[
+            ContextKeys.OUTBOUND_MAPPING.value
+        ]
+    
+    def generate_sbdh(self, header_version='1.0', sender_sgln=None,
+                      receiver_sgln=None, doc_id_standard='EPCGlobal',
+                      doc_id_type_version='1.0',
+                      doc_id_instance_identifier=None, doc_id_type='Events',
+                      creation_date_and_time=None, sender_gln=None,
+                      receiver_gln=None):
+        sender_gln = self.rule_context.context.get('SENDER_GLN')
+        receiver_gln = self.rule_context.context.get('RECEIVER_GLN')
+        if sender_gln and receiver_gln:
+            return super(TradingPartnerMappingOutputStep, self).generate_sbdh(
+                header_version, sender_sgln,
+                receiver_sgln, doc_id_standard,
+                doc_id_type_version,
+                doc_id_instance_identifier, doc_id_type,
+                creation_date_and_time, sender_gln,
+                receiver_gln)
+    

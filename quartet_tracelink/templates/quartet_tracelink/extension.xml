@@ -1,0 +1,29 @@
+{%  if event.child_quantity_list or event.source_list or event.destination_list or event.ilmd %}
+<extension>
+{% if event.child_quantity_list %}
+    <childQuantityList>
+    {% include "epcis/child_quantity_list.xml" %}
+    </childQuantityList>
+{% endif %}
+{% if event.quantity_list %}
+    <quantityList>
+    {% include "epcis/quantity_list.xml" %}
+    </quantityList>
+{% endif %}
+{% if event.source_list %}
+    {% with source_list = event.source_list %}
+        {% include "epcis/source_list.xml" %}
+    {% endwith %}
+{% endif %}
+{% if event.destination_list %}
+    {% with destination_list = event.destination_list %}
+        {% include "epcis/destination_list.xml" %}
+    {% endwith %}
+{% endif %}
+{% if event.ilmd %}
+    {% with ilmd = event.ilmd %}
+        {% include "quartet_tracelink/ilmd.xml" %}
+    {% endwith %}
+{% endif %}
+</extension>
+{% endif %}

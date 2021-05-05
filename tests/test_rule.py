@@ -571,3 +571,151 @@ class TestRules(TransactionTestCase):
         self.assertEqual(
             Location.objects.all().count(), 42
         )
+    
+    def _create_combined_epcis_ship_steps(self, rule):
+        # Output parsing step
+        parsing_step = Step.objects.create(
+            name='Parse',
+            rule=rule,
+            step_class='quartet_tracelink.steps.OutputParsingStep',
+            order=1)
+        StepParameter.objects.create(
+            name='EPCIS Output Criteria',
+            value=self._create_shipping_ouput_criterion().name,
+            step=parsing_step
+        )
+        # Comm step
+        self._create_comm_step(rule)
+        # Agg step
+        self._create_output_steps(rule)
+        
+    def _create_combined_output_step(self, rule):
+        output_step = Step.objects.create(
+            name='Render Message',
+            rule=rule,
+            step_class='quartet_tracelink.steps.CombinedOutputStep',
+            order=4)
+        StepParameter.objects.create(
+            name='Object Event Template',
+            value='quartet_tracelink/combined_object_event.xml',
+            step=output_step
+        )
+        StepParameter.objects.create(
+            name='Template Path',
+            value='quartet_tracelink/tracelink_epcis_events_masterdata.xml',
+            step=output_step
+        )
+    
+    def _create_disopsition_assigned_extended_step(self, rule):
+        output_step = Step.objects.create(
+            name='Render Message',
+            rule=rule,
+            step_class='quartet_tracelink.steps.DispositionAssignedOutputStep',
+            order=4)
+        StepParameter.objects.create(
+            name='Object Event Template',
+            value='quartet_tracelink/disposition_assigned_extended.xml',
+            step=output_step
+        )
+        StepParameter.objects.create(
+            name='Append Filtered Events	',
+            value='False',
+            step=output_step
+        )
+        StepParameter.objects.create(
+            name='Sender GLN',
+            value='0355556666666',
+            step=output_step
+        )
+
+    def _create_outbound_mapping(self):
+        company = Company.objects.create(
+            GLN13='0355555555555',
+            SGLN='urn:epc:id:sgtin:0355555.555555.0',
+            gs1_company_prefix='0355555'
+        )
+        ship_from_co = company
+        ship_from_location = Location.objects.create(
+            GLN13='0355555555555',
+            SGLN='urn:epc:id:sgtin:0355555.555555.0',
+            company=company
+        )
+        ship_to_co = company
+        ship_to_location = ship_from_location
+        OutboundMapping.objects.create(
+            company=company,
+            from_business=ship_from_co,
+            ship_from=ship_from_location,
+            to_business=ship_to_co,
+            ship_to=ship_to_location
+        )
+    
+    def _create_trade_item_masterdata(self):
+        company = Company.objects.first()
+        TradeItem.objects.create(GTIN14='00355555555551',
+                                 package_uom='Ea',
+                                 NDC_pattern='5-3-2',
+                                 NDC='55555-555-55',
+                                 company=company)
+        TradeItem.objects.create(GTIN14='30355555555552',
+                                 package_uom='Bdl',
+                                 NDC_pattern='5-3-2',
+                                 NDC='55555-555-55',
+                                 company=company)
+        TradeItem.objects.create(GTIN14='60355555555553',
+                                 package_uom='Cs',
+                                 NDC_pattern='5-3-2',
+                                 NDC='55555-555-55',
+                                 company=company)
+
+    def test_combined_epcis_shipping_step(self):
+        # create rule
+        rule = self._create_rule()
+        # create steps and params
+        self._create_combined_epcis_ship_steps(rule)
+        self._create_combined_output_step(rule)
+        # create mapping and masterdata
+        self._create_outbound_mapping()
+        self._create_trade_item_masterdata()
+        # create task
+        db_task = self._create_task(rule)
+        # get epcis file
+        curpath = os.path.dirname(__file__)
+        data_path = os.path.join(curpath, 'data/combined_data.xml')
+        # execute rule
+        context = []
+        with open(data_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task)
+        # asserts
+        output_epcis = context.context.get(
+            ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value)
+        filtered_events = context.context.get(
+            ContextKeys.FILTERED_EVENTS_KEY.value)
+        self.assertTrue('VocabularyElement id="urn:epc:idpat:sgtin:' in output_epcis)
+        self.assertEquals(len(filtered_events), 1)
+
+    def test_disposition_assigned_extended_step(self):
+        # create rule
+        rule = self._create_rule()
+        # create steps and params
+        self._create_combined_epcis_ship_steps(rule)
+        self._create_disopsition_assigned_extended_step(rule)
+        # create mapping and masterdata
+        self._create_outbound_mapping()
+        self._create_trade_item_masterdata()
+        # create task
+        db_task = self._create_task(rule)
+        # get epcis file
+        curpath = os.path.dirname(__file__)
+        data_path = os.path.join(curpath, 'data/combined_data.xml')
+        # execute rule
+        context = []
+        with open(data_path, 'r') as data_file:
+            context = execute_rule(data_file.read().encode(), db_task)
+        # asserts
+        filtered_events =  context.context.get(
+            ContextKeys.FILTERED_EVENTS_KEY.value)
+        output_epcis = context.context.get(
+            ContextKeys.OUTBOUND_EPCIS_MESSAGE_KEY.value)
+        self.assertTrue(output_epcis)
+        self.assertTrue(filtered_events)

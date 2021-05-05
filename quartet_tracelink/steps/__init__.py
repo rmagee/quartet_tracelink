@@ -14,8 +14,9 @@
 # Copyright 2019 SerialLab Corp.  All rights reserved.
 
 from quartet_tracelink.steps.steps import AddCommissioningDataStep, \
-    OutputParsingStep, TracelinkOutputStep, TracelinkFilteredEventOutputStep
+    OutputParsingStep, TracelinkOutputStep, \
+    TracelinkFilteredEventOutputStep, CombinedOutputStep
 from quartet_tracelink.steps.mapping_step import \
-    TradingPartnerMappingOutputStep
+    TradingPartnerMappingOutputStep, ShippingEventMappingOutputStep
 from quartet_tracelink.steps.output_step import \
-    TraceLinkCommonAttributesOutputStep
+    TraceLinkCommonAttributesOutputStep, DispositionAssignedOutputStep
